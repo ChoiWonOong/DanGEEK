@@ -12,10 +12,13 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+env:
+  AWS_REGION: ap-northeast-2
+  S3_BUCKET_NAME: dangeek
 
+  
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -34,33 +37,13 @@ jobs:
       uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
     - name: Build with Gradle Wrapper
-      run: |
-       chmod +x ./gradlew
-       ./gradlew build
-    # 빌드해서 생긴 JAR 파일을 깃허브 아티팩트로 업로드!!
-    - name: Upload build artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: dangeek
-        path: build/libs/dangeek-0.0.1-SNAPSHOT.jar
+      run: chmod +x ./gradlew
+       ./gradlew clean build -x test
+      shell: bash
+        
+
        
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: dangeek
-          path: build/libs/
-# Deploy
-      - name: Deploy
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_PRIVATE_SECRET_KEY }}
-          aws-region: ap-northeast-2
-          
+
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
     #

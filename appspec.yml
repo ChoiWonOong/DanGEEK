@@ -3,5 +3,19 @@ version: 0.0 # CodeDeploy 버전
 os: linux
 files:
   - source: / # CodeDeploy에서 전달해 준 파일 중 destination으로 이동시킬 대상 지정: 루트 경로(전체 파일)
-    destination: /home/ubuntu/app/zip/ # source에서 지정한 파일을 받을 위치
+    destination: /home/ubuntu/build/ # source에서 지정한 파일을 받을 위치
     overwrite: yes
+permissions:
+  - object: /
+    pattern: "**"
+    owner : ubuntu
+    group : ubuntu
+hooks:
+
+  # 주의 할 점은 빈칸 yml파일 특성상 빈칸 개수를 중시해야하고 Tab을 쓰면 안된다는점
+  # AfterInstall은 배포를 완료한 후 실행되는 스크립트를 명시하며 
+  # ApplicationStart나 ValidateService 등을 대신 쓸 수 있다.
+  AfterInstall:
+    - location: start.sh
+      timeout: 60
+      runas: ubuntu

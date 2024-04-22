@@ -67,7 +67,7 @@ jobs:
         aws deploy create-deployment \
         --application-name ${{ env.CODE_DEPLOY_APP_NAME }} \
         --deployment-config-name CodeDeployDefault.AllAtOnce \
-        --deployment-group-name $ {{ env.CODE_DEPLOY_GROUP_NAME }} \
+        --deployment-group-name ${{ env.CODE_DEPLOY_GROUP_NAME }} \
         --file-exists-behavior OVERWRITE \
         --s3-location bucket=${{ env.S3_BUCKET_NAME }},bundleType=zip,key=dangeek.zip  \
     

@@ -15,7 +15,7 @@ on:
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: dangeek
-  CODE_DEPLOY_APP_NAMAE: Dangeek
+  CODE_DEPLOY_APP_NAME: Dangeek
   CODE_DEPLOY_GROUP_NAME: Dangeek-group
   
 jobs:

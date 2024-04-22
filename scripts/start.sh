@@ -18,6 +18,16 @@ else
   kill -15 $CURRENT_PID
   sleep 5
 fi
+export AWS_ACCESS_KEY_ID = ${{ AWS_ACCESS_KEY_ID }}
+export AWS_PRIVATE_ACCESS_KEY = ${{ AWS_PRIVATE_ACCESS_KEY }}
+export DB_ENDPOINT = ${{ DB_ENDPOINT }}
+export DB_MASTER_NAME = ${{ DB_MASTER_NAME }}
+export DB_MASTER_PASSWORD = ${{ DB_MASTER_PASSWORD }}
+export JWT_SECRET = ${{ JWT_SECRET }}
+export SERVER_IP = ${{ SERVER_IP }}
+export SSH_PRIVATE_KEY = ${{ SSH_PRIVATE_KEY }}
+export SSH_USER = ${{ SSH_USER }}
+export UNIV_KEY = ${{ UNIV_KEY }}
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 echo "> DEPLOY_JAR 배포"    >> /home/ubuntu/deploy.log

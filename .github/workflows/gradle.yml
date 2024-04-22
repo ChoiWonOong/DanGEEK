@@ -15,7 +15,6 @@ on:
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: dangeek
-
   
 jobs:
   build:
@@ -42,8 +41,24 @@ jobs:
         
     - name: Build with gradle 
       run: ./gradlew build --no-daemon -x test
-       
 
+
+    # 프로젝트 압축
+    - name: Make zip file
+      run: zip -r ./dangeek.zip .
+      shell: bash
+   
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1	
+      with: 
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    # 압축한 프로젝트를 S3로 전송
+    - name: Upload to S3
+      run: aws s3 cp --region ${{ env.AWS_REGION}} ./dangeek.zip s3://$S3_BUCKET_NAME/dangeek.zip  
+      
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
     #

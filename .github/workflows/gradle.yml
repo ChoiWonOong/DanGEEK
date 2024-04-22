@@ -65,11 +65,11 @@ jobs:
     - name: Code Deploy
       run: | 
         aws deploy create-deployment \
-        --application-name $CODE_DEPLOY_APP_NAME \
+        --application-name ${{ CODE_DEPLOY_APP_NAME }} \
         --deployment-config-name CodeDeployDefault.AllAtOnce \
-        --deployment-group-name $CODE_DEPLOY_GROUP_NAME \
+        --deployment-group-name $ {{ CODE_DEPLOY_GROUP_NAME }} \
         --file-exists-behavior OVERWRITE \
-        --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=dangeek.zip \
+        --s3-location bucket=${{ S3_BUCKET_NAME }},bundleType=zip,key=dangeek.zip \
     
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.

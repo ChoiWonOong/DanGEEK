@@ -3,6 +3,7 @@ package DanGEEK.app.service;
 import DanGEEK.app.domain.Member;
 import DanGEEK.app.dto.MemberCreateRequestDto;
 import DanGEEK.app.dto.MemberCreateResponseDto;
+import DanGEEK.app.dto.MemberPasswordReassignDto;
 import DanGEEK.app.dto.UnivCertification.UnivCertifyCodeRequestDto;
 import DanGEEK.app.dto.UnivCertification.UnivCertifyRequestDto;
 import DanGEEK.app.dto.token.TokenDto;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -113,5 +115,16 @@ public class AuthService {
 
         // 5. 토큰 발급
         return tokenDto;
+    }
+
+    public MemberPasswordReassignDto passwordReassign(MemberPasswordReassignDto memberPasswordReassignDto){
+        Optional<Member> optionalMember = memberRepository.findByUsername(memberPasswordReassignDto.getUsername());
+        if(optionalMember.isPresent()){
+            Member member = optionalMember.get();
+            member.passwordReassign(passwordEncoder.encode(memberPasswordReassignDto.getPassword()));
+            memberRepository.save(member);
+            return new MemberPasswordReassignDto(memberPasswordReassignDto.getUsername(), true);
+        }
+        return new MemberPasswordReassignDto(memberPasswordReassignDto.getUsername(), false);
     }
 }

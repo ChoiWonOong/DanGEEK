@@ -2,6 +2,7 @@ package DanGEEK.app.controller;
 
 import DanGEEK.app.dto.MemberCreateRequestDto;
 import DanGEEK.app.dto.MemberCreateResponseDto;
+import DanGEEK.app.dto.MemberPasswordReassignDto;
 import DanGEEK.app.dto.UnivCertification.UnivCertifyCodeRequestDto;
 import DanGEEK.app.dto.UnivCertification.UnivCertifyRequestDto;
 import DanGEEK.app.dto.token.TokenDto;
@@ -44,5 +45,10 @@ public class AuthController {
     @PatchMapping("/logout")
     public ResponseEntity<String> logout(@AuthenticationPrincipal User user, @RequestBody TokenDto tokenDto) {
         return ResponseEntity.ok(authService.logout(tokenDto.getAccessToken(), user));
+    }
+
+    @PatchMapping("/reassign_password")
+    public ResponseEntity<MemberPasswordReassignDto> passwordReassign(@RequestBody MemberPasswordReassignDto memberPasswordReassignDto){
+        return ResponseEntity.ok(authService.passwordReassign(memberPasswordReassignDto));
     }
 }

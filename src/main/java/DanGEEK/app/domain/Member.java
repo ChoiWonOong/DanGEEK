@@ -30,6 +30,12 @@ public class Member {
 
     @Column(nullable = false)
     private String nickname;
+    @Column(nullable = false)
+    private Boolean introductionWritten = false;
+
+    @OneToOne
+    @JoinColumn(name="introduction_id")
+    private MemberIntroduction introduction_id;
 
     @Enumerated(EnumType.STRING)
     private Authority authority;
@@ -51,5 +57,13 @@ public class Member {
                 member.password,
                 Collections.singleton(grantedAuthority)
         );
+    }
+    public Member passwordReassign(String password){
+        this.password = password;
+        return this;
+    }
+    public void writeIntroduction(MemberIntroduction memberIntroduction){
+        this.introductionWritten = true;
+        this.introduction_id = memberIntroduction;
     }
 }

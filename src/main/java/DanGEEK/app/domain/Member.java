@@ -30,6 +30,8 @@ public class Member {
     @Column(nullable = false)
     private Boolean introductionWritten = false;
 
+    @Column(nullable = false)
+    private Boolean putOnRecommend = false;
     @OneToOne
     @JoinColumn(name="introduction_id")
     private MemberIntroduction introduction_id;
@@ -61,5 +63,8 @@ public class Member {
     public void writeIntroduction(MemberIntroduction memberIntroduction){
         this.introductionWritten = true;
         this.introduction_id = memberIntroduction;
+    }
+    public void changePutOutToRecommend(){
+        this.putOnRecommend= !this.putOnRecommend;
     }
 }

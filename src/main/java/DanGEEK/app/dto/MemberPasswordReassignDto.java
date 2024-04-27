@@ -5,7 +5,6 @@ import lombok.Getter;
 @Getter
 public class MemberPasswordReassignDto {
     String username;
-
     String password;
     Boolean status;
 

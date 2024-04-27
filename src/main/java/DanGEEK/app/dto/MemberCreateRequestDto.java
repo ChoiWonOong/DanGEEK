@@ -10,21 +10,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Getter
 public class MemberCreateRequestDto {
     String username;
-    String userEmail;
     String password;
     String nickname;
     @Transactional
     public Member toMember(PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .username(username)
-                .email(userEmail)
                 .password(passwordEncoder.encode(password))
                 .nickname(nickname)
                 .authority(Authority.ROLE_USER)
                 .build();
     }
     public UsernamePasswordAuthenticationToken toAuthentication() {
-        UsernamePasswordAuthenticationToken token =new UsernamePasswordAuthenticationToken(userEmail, password);
+        UsernamePasswordAuthenticationToken token =new UsernamePasswordAuthenticationToken(username, password);
         return token;
     }
 }

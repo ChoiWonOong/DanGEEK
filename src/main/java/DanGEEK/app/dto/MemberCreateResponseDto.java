@@ -6,12 +6,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberCreateResponseDto {
     private String username;
-    private String userEmail;
     private String nickname;
 
-    public MemberCreateResponseDto(String username, String userEmail, String name) {
+    public MemberCreateResponseDto(String username, String name) {
         this.username = username;
-        this.userEmail = userEmail;
         this.nickname = name;
     }
 }

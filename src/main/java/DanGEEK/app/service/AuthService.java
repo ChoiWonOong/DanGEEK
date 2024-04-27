@@ -44,7 +44,7 @@ public class AuthService {
         return UnivCert.certifyCode(key, univCertifyCodeRequestDto.getEmail(), "단국대학교", univCertifyCodeRequestDto.getCode());
     }
     public MemberCreateResponseDto memberSignup(MemberCreateRequestDto memberCreateRequestDto) {
-        if (memberRepository.existsByUsername(memberCreateRequestDto.getUserEmail())) {
+        if (memberRepository.existsByUsername(memberCreateRequestDto.getUsername())) {
             throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
         Member member = memberCreateRequestDto.toMember(passwordEncoder);

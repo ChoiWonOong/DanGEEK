@@ -23,9 +23,6 @@ public class Member {
     private String username;
 
     @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
@@ -40,15 +37,14 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Authority authority;
     @Builder
-    public Member(String username, String email, String password, String nickname, Authority authority){
+    public Member(String username, String password, String nickname, Authority authority){
         this.username = username;
-        this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.authority = authority;
     }
     public static MemberCreateResponseDto memberToResponseDto(Member member) {
-        return new MemberCreateResponseDto(member.username, member.email, member.nickname);
+        return new MemberCreateResponseDto(member.username, member.nickname);
     }
     public static User memberToUser(Member member){
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.authority.toString());

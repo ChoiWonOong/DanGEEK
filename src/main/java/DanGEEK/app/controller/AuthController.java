@@ -31,7 +31,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.univCertifyCode(univCertifyCodeRequestDto));
     }
     @PostMapping("/signup")
-    public ResponseEntity<MemberCreateResponseDto> memberSignup(@RequestBody MemberCreateRequestDto memberCreateRequestDto){
+    public ResponseEntity<MemberCreateResponseDto> memberSignup(@RequestBody MemberCreateRequestDto memberCreateRequestDto) {
         return ResponseEntity.ok(authService.memberSignup(memberCreateRequestDto));
     }
     @PostMapping("/login")

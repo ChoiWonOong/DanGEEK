@@ -1,5 +1,7 @@
 package DanGEEK.app.service;
 
+import DanGEEK.app.Exception.ErrorCode;
+import DanGEEK.app.Exception.RestApiException;
 import DanGEEK.app.domain.Member;
 import DanGEEK.app.dto.MemberCreateRequestDto;
 import DanGEEK.app.dto.MemberCreateResponseDto;
@@ -45,7 +47,7 @@ public class AuthService {
     }
     public MemberCreateResponseDto memberSignup(MemberCreateRequestDto memberCreateRequestDto) {
         if (memberRepository.existsByUsername(memberCreateRequestDto.getUsername())) {
-            throw new RuntimeException("이미 가입되어 있는 유저입니다");
+            throw new RestApiException(ErrorCode.ALREADY_EXIST_ERROR);
         }
         Member member = memberCreateRequestDto.toMember(passwordEncoder);
         return Member.memberToResponseDto(memberRepository.save(member));

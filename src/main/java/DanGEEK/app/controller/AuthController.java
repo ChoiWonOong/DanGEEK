@@ -46,8 +46,15 @@ public class AuthController {
     public ResponseEntity<String> logout(@AuthenticationPrincipal User user, @RequestBody TokenDto tokenDto) {
         return ResponseEntity.ok(authService.logout(tokenDto.getAccessToken(), user));
     }
-
-    @PatchMapping("/reassign_password")
+    @PostMapping("/reassign/certify")
+    public ResponseEntity<Map<String,Object>> passwordReassignCertify(@RequestBody UnivCertifyRequestDto univCertifyRequestDto) throws IOException{
+        return ResponseEntity.ok(authService.passwordReassignCertify(univCertifyRequestDto));
+    }
+    @PostMapping("/reassign/certify_code")
+    public ResponseEntity<Map<String,Object>> passwordReassignCertifyCode(@RequestBody UnivCertifyCodeRequestDto univCertifyCodeRequestDto) throws IOException{
+        return ResponseEntity.ok(authService.passwordReassignCertifyCode(univCertifyCodeRequestDto));
+    }
+    @PatchMapping("/reassign/password")
     public ResponseEntity<MemberPasswordReassignDto> passwordReassign(@RequestBody MemberPasswordReassignDto memberPasswordReassignDto){
         return ResponseEntity.ok(authService.passwordReassign(memberPasswordReassignDto));
     }

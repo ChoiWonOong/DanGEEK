@@ -38,7 +38,7 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     public Map<String, Object> univCertify(UnivCertifyRequestDto univCertifyRequestDto) throws IOException {
-        return UnivCert.certify(key, univCertifyRequestDto.getEmail(), "단국대학교", false);
+        return UnivCert.certify(key, univCertifyRequestDto.getEmail(), "단국대학교", true);
     }
     public Map<String, Object> univCertifyCode(UnivCertifyCodeRequestDto univCertifyCodeRequestDto) throws IOException {
         return UnivCert.certifyCode(key, univCertifyCodeRequestDto.getEmail(), "단국대학교", univCertifyCodeRequestDto.getCode());
@@ -50,7 +50,15 @@ public class AuthService {
         Member member = memberCreateRequestDto.toMember(passwordEncoder);
         return Member.memberToResponseDto(memberRepository.save(member));
     }
-
+    public Map<String, Object> passwordReassignCertify(UnivCertifyRequestDto univCertifyRequestDto) throws IOException{
+        if(memberRepository.findByUsername(univCertifyRequestDto.getEmail()).isPresent()){
+            return UnivCert.certify(key, univCertifyRequestDto.getEmail(), "단국대학교", false);
+        }
+        return null;
+    }
+    public Map<String, Object> passwordReassignCertifyCode(UnivCertifyCodeRequestDto univCertifyCodeRequestDto) throws IOException {
+        return UnivCert.certifyCode(key, univCertifyCodeRequestDto.getEmail(), "단국대학교", univCertifyCodeRequestDto.getCode());
+    }
     @Transactional
     public TokenDto memberLogin(MemberCreateRequestDto memberCreateRequestDto) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성

@@ -1,8 +1,11 @@
 package DanGEEK.app.domain;
 
+import DanGEEK.app.util.StringListConverter;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -20,12 +23,14 @@ public class MemberIntroduction {
     @Column(name="sex", nullable = false)
     private String sex;
     @Column(name="personality", nullable = false)
-    private String personality;
+    @Convert(converter = StringListConverter.class)
+    private List<String> personality;
     @Column(name="hobby", nullable = false)
-    private String hobby;
+    @Convert(converter = StringListConverter.class)
+    private List<String> hobby;
 
     @Builder
-    public MemberIntroduction(String name, String major, String grade, String sex, String personality, String hobby){
+    public MemberIntroduction(String name, String major, String grade, String sex, List<String> personality, List<String> hobby){
         this.name = name;
         this.major = major;
         this.grade = grade;

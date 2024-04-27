@@ -1,16 +1,15 @@
 package DanGEEK.app.domain;
 
 import DanGEEK.app.dto.MemberCreateResponseDto;
+import DanGEEK.app.dto.MyPageDto;
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.Collections;
-@Getter
 @Entity
 @Table(name = "member")
 @NoArgsConstructor
@@ -34,7 +33,7 @@ public class Member {
     private Boolean putOnRecommend = false;
     @OneToOne
     @JoinColumn(name="introduction_id")
-    private MemberIntroduction introduction_id;
+    private MemberIntroduction introduction;
 
     @Enumerated(EnumType.STRING)
     private Authority authority;
@@ -62,9 +61,15 @@ public class Member {
     }
     public void writeIntroduction(MemberIntroduction memberIntroduction){
         this.introductionWritten = true;
-        this.introduction_id = memberIntroduction;
+        this.introduction = memberIntroduction;
     }
     public void changePutOutToRecommend(){
         this.putOnRecommend= !this.putOnRecommend;
+    }
+    public MyPageDto MemberToMyPageDto(){
+        return new MyPageDto(this.username, this.nickname, this.introductionWritten, this.putOnRecommend);
+    }
+    public MemberIntroduction getIntroduction(){
+        return this.introduction;
     }
 }

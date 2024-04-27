@@ -1,11 +1,13 @@
 package DanGEEK.app.dto;
 
 import DanGEEK.app.domain.MemberIntroduction;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
+@AllArgsConstructor
 public class MemberIntroductionCreateDto {
     private String name;
     private String major;

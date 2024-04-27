@@ -1,5 +1,6 @@
 package DanGEEK.app.domain;
 
+import DanGEEK.app.dto.MemberIntroductionCreateDto;
 import DanGEEK.app.util.StringListConverter;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -13,7 +14,6 @@ public class MemberIntroduction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(name="name", nullable = false)
     private String name;
     @Column(name="major", nullable = false)
@@ -37,5 +37,10 @@ public class MemberIntroduction {
         this.sex = sex;
         this.personality = personality;
         this.hobby = hobby;
+    }
+    public MemberIntroductionCreateDto introductionToDto(){
+        return new MemberIntroductionCreateDto(
+                name, major, grade, sex, personality, hobby
+        );
     }
 }

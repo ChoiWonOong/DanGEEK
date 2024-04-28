@@ -49,6 +49,9 @@ public class AuthService {
         if (memberRepository.existsByUsername(memberCreateRequestDto.getUsername())) {
             throw new RestApiException(ErrorCode.ALREADY_EXIST_ERROR);
         }
+        if (memberRepository.existByNickname(memberCreateRequestDto.getNickname())) {
+            throw new RestApiException(ErrorCode.ALREADY_EXIST_ERROR);
+        }
         Member member = memberCreateRequestDto.toMember(passwordEncoder);
         return Member.memberToResponseDto(memberRepository.save(member));
     }

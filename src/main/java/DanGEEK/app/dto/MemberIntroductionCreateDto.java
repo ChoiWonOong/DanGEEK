@@ -13,7 +13,7 @@ public class MemberIntroductionCreateDto {
     private String major;
     private String grade;
     private String sex;
-    private List<String> personalty;
+    private List<String> personality;
     private List<String> hobby;
     public MemberIntroduction toMemberIntroduction(){
         return MemberIntroduction.builder()
@@ -21,7 +21,7 @@ public class MemberIntroductionCreateDto {
                 .major(major)
                 .grade(grade)
                 .sex(sex)
-                .personality(personalty)
+                .personality(personality)
                 .hobby(hobby)
                 .build();
     }

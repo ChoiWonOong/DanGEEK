@@ -40,15 +40,15 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     public Map<String, Object> univCertify(UnivCertifyRequestDto univCertifyRequestDto) throws IOException {
+        if (memberRepository.existsByUsername(univCertifyRequestDto.getEmail())) {
+            throw new RestApiException(ErrorCode.ALREADY_EXIST_ERROR);
+        }
         return UnivCert.certify(key, univCertifyRequestDto.getEmail(), "단국대학교", true);
     }
     public Map<String, Object> univCertifyCode(UnivCertifyCodeRequestDto univCertifyCodeRequestDto) throws IOException {
         return UnivCert.certifyCode(key, univCertifyCodeRequestDto.getEmail(), "단국대학교", univCertifyCodeRequestDto.getCode());
     }
     public MemberCreateResponseDto memberSignup(MemberCreateRequestDto memberCreateRequestDto) {
-        if (memberRepository.existsByUsername(memberCreateRequestDto.getUsername())) {
-            throw new RestApiException(ErrorCode.ALREADY_EXIST_ERROR);
-        }
         if (memberRepository.existByNickname(memberCreateRequestDto.getNickname())) {
             throw new RestApiException(ErrorCode.ALREADY_EXIST_ERROR);
         }

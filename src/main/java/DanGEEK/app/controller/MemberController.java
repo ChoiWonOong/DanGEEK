@@ -6,25 +6,23 @@ import DanGEEK.app.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/member")
 public class MemberController {
     private final MemberService memberService;
 
-    @PostMapping("/introduction/write")
+    @PostMapping("/write/introduction")
     public ResponseEntity<MemberIntroductionCreateDto> writeIntroduction(@RequestBody MemberIntroductionCreateDto memberIntroductionCreateDto){
         return ResponseEntity.ok(memberService.writeIntroduction(memberIntroductionCreateDto));
     }
-    @GetMapping("/mypage/me")
+    @GetMapping("/mypage")
     public ResponseEntity<MyPageDto> getMyPage(){
         return ResponseEntity.ok(memberService.getMyPage());
     }
-    @GetMapping("/mypage/{id}")
+    @GetMapping("/introduction/{id}")
     public ResponseEntity<MemberIntroductionCreateDto> getMemberIntroduction(@PathVariable Long id){
         return ResponseEntity.ok(memberService.getMemberIntroduction(id));
     }

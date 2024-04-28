@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor
-public class MemberIntroduction {
+public class MemberIntroduction extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

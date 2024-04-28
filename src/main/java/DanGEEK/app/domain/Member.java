@@ -72,4 +72,16 @@ public class Member {
     public MemberIntroduction getIntroduction(){
         return this.introduction;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Authority getAuthority() {
+        return authority;
+    }
 }

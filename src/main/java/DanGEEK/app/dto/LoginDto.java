@@ -9,13 +9,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 @NoArgsConstructor
 @Getter
 public class LoginDto {
-    @NotNull
-    String userEmail;
-    @NotNull
+    String username;
     String password;
     public UsernamePasswordAuthenticationToken toAuthentication() {
-        UsernamePasswordAuthenticationToken token =new UsernamePasswordAuthenticationToken(userEmail, password);
-        System.out.println("email : "+ userEmail + "\nprincipal : " + token.getPrincipal());
+        UsernamePasswordAuthenticationToken token =new UsernamePasswordAuthenticationToken(username, password);
         return token;
     }
 }

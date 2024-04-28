@@ -49,7 +49,7 @@ public class AuthService {
         return UnivCert.certifyCode(key, univCertifyCodeRequestDto.getEmail(), "단국대학교", univCertifyCodeRequestDto.getCode());
     }
     public MemberCreateResponseDto memberSignup(MemberCreateRequestDto memberCreateRequestDto) {
-        if (memberRepository.existByNickname(memberCreateRequestDto.getNickname())) {
+        if (memberRepository.existsByNickname(memberCreateRequestDto.getNickname())) {
             throw new RestApiException(ErrorCode.ALREADY_EXIST_ERROR);
         }
         Member member = memberCreateRequestDto.toMember(passwordEncoder);

@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class UnivCertifyRequestDto {
-    String email;
+    String username;
 }

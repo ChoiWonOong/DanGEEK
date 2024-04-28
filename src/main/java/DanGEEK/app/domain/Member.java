@@ -13,7 +13,7 @@ import java.util.Collections;
 @Entity
 @Table(name = "member")
 @NoArgsConstructor
-public class Member {
+public class Member extends BaseEntity{
     @Id
     @Column(name ="member_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -10,6 +10,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.Collections;
+import java.util.List;
+
 @Entity
 @Table(name = "member")
 @NoArgsConstructor
@@ -34,7 +36,8 @@ public class Member extends BaseEntity{
     @OneToOne
     @JoinColumn(name="introduction_id")
     private MemberIntroduction introduction;
-
+    @OneToMany(mappedBy = "notification", cascade = CascadeType.REMOVE)
+    private List<Notification> notifications;
     @Enumerated(EnumType.STRING)
     private Authority authority;
     @Builder

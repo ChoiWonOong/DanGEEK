@@ -14,6 +14,9 @@ public class MemberIntroduction extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "member_id")
+    @OneToOne(mappedBy = "introduction")
+    private Member member;
     @Column(name="name", nullable = false)
     private String name;
     @Column(name="major", nullable = false)

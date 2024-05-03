@@ -15,7 +15,7 @@ public class Notification {
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "receiver_id")
     private Member member;
 
     @Column(name="read_flag")

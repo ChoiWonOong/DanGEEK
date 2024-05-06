@@ -1,7 +1,16 @@
 package DanGEEK.app.service;
 
 
+import DanGEEK.app.Exception.ErrorCode;
+import DanGEEK.app.Exception.RestApiException;
+import DanGEEK.app.domain.Member;
+import DanGEEK.app.domain.Notification;
+import DanGEEK.app.domain.Post;
+import DanGEEK.app.dto.NotificationSendDto;
 import DanGEEK.app.repository.EmitterRepository;
+import DanGEEK.app.repository.MemberRepository;
+import DanGEEK.app.repository.NotificationRepository;
+import DanGEEK.app.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -15,6 +24,9 @@ public class NotificationService {
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
 
     private final EmitterRepository emitterRepository;
+    private final MemberRepository memberRepository;
+    private final PostRepository postRepository;
+    private final NotificationRepository notificationRepository;
 
     /**
      * 클라이언트가 구독을 위해 호출하는 메서드.
@@ -36,8 +48,14 @@ public class NotificationService {
      * @param userId - 메세지를 전송할 사용자의 아이디.
      * @param event  - 전송할 이벤트 객체.
      */
-    public void notify(Long userId, Object event) {
-        sendToClient(userId, event);
+    public NotificationSendDto notify(NotificationSendDto notificationSendDto) {
+        Member sender = memberRepository.findById(notificationSendDto.getMember_id()).orElseThrow(()->new RestApiException(ErrorCode.USERNAME_NOT_FOUND_ERROR));
+        Post post = postRepository.findById(notificationSendDto.getPost_id()).get();
+        Member receiver = memberRepository.findById(post.getMember().getId()).orElseThrow(()->new RestApiException(ErrorCode.USERNAME_NOT_FOUND_ERROR));
+        Notification notification = new Notification(post, sender);
+        notificationRepository.save(notification);
+        sendToClient(receiver.getId(), "알림이 도착했습니다.");
+        return notificationSendDto;
     }
 
     /**
@@ -46,7 +64,7 @@ public class NotificationService {
      * @param id   - 데이터를 받을 사용자의 아이디.
      * @param data - 전송할 데이터.
      */
-    private void sendToClient(Long id, Object data) {
+    private void sendToClient(Long id, Object data) { //data
         SseEmitter emitter = emitterRepository.get(id);
         if (emitter != null) {
             try {

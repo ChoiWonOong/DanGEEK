@@ -1,5 +1,6 @@
 package DanGEEK.app.domain;
 
+import DanGEEK.app.dto.PostDto;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -14,11 +15,22 @@ public class Post extends BaseEntity {
     @Column(name = "contents", nullable = false)
     private String contents;
     @Column(name = "post_type")
-    PostType type;
+    private PostType type;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    public Post(String title, String contents, String type) {
+
+    public Post(String title, String contents, PostType type, Member member) {
         this.title = title;
         this.contents = contents;
-        this.type = PostType.valueOf(type);
+        this.type = type;
+        this.member = member;
+    }
+    public PostDto toDto(){
+        return new PostDto(id, title, contents, member.getId(), type);
+    }
+    public Member getMember() {
+        return member;
     }
 }

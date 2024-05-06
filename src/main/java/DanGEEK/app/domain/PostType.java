@@ -11,7 +11,7 @@ public enum PostType {
     PostType(String type){
         this.type = type;
     }
-    public String getType(){
+    public String getString(){
         return this.type;
     }
 }

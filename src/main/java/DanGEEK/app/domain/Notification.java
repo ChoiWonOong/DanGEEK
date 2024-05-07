@@ -9,7 +9,7 @@ public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "post_id")
+
     @ManyToOne
     @JoinColumn(name="post_id")
     private Post post;
@@ -21,4 +21,9 @@ public class Notification {
     @Column(name="read_flag")
     private Boolean readFlag;
 
+    public Notification(Post post, Member member) {
+        this.post = post;
+        this.member = member;
+        this.readFlag = false;
+    }
 }

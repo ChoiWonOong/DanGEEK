@@ -36,8 +36,10 @@ public class Member extends BaseEntity{
     @OneToOne
     @JoinColumn(name="introduction_id")
     private MemberIntroduction introduction;
-    @OneToMany(mappedBy = "notification", cascade = CascadeType.REMOVE)
-    private List<Notification> notifications;
+
+    @OneToMany
+    @JoinColumn(name="posts")
+    private List<Post> posts;
     @Enumerated(EnumType.STRING)
     private Authority authority;
     @Builder

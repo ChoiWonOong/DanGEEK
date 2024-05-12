@@ -38,7 +38,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Server error."),
 
     ALREADY_EXIST_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Already Exists"),
-    USERNAME_NOT_FOUND_ERROR(HttpStatus.UNAUTHORIZED, "Username Not Found"),
+    NOT_EXIST_ERROR(HttpStatus.UNAUTHORIZED, "Entity Not Exists"),
 
     EXPIRED_TOKEN_ERROR(HttpStatus.UNAUTHORIZED, "Expired Token");
 

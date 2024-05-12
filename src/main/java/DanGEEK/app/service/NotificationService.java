@@ -11,11 +11,14 @@ import DanGEEK.app.repository.EmitterRepository;
 import DanGEEK.app.repository.MemberRepository;
 import DanGEEK.app.repository.NotificationRepository;
 import DanGEEK.app.repository.PostRepository;
+import DanGEEK.app.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,10 +33,18 @@ public class NotificationService {
 
     /**
      * 클라이언트가 구독을 위해 호출하는 메서드.
-     *
-     * @param userId - 구독하는 클라이언트의 사용자 아이디.
-     * @return SseEmitter - 서버에서 보낸 이벤트 Emitter
+     * param userId - 구독하는 클라이언트의 사용자 아이디.
+     * return SseEmitter - 서버에서 보낸 이벤트 Emitter
      */
+    public List<NotificationSendDto> getNotificationList(){
+        List<Notification> notificationList = notificationRepository.findAllByReceiver(memberRepository.findById(SecurityUtil.getCurrentMemberId())
+                .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR)));
+        List<NotificationSendDto> notificationSendDtoList = new ArrayList<>();
+        for(Notification n : notificationList){
+            notificationSendDtoList.add(n.toDto());
+        }
+        return notificationSendDtoList;
+    }
     public SseEmitter subscribe(Long userId) {
         SseEmitter emitter = createEmitter(userId);
 
@@ -44,15 +55,14 @@ public class NotificationService {
     /**
      * 서버의 이벤트를 클라이언트에게 보내는 메서드
      * 다른 서비스 로직에서 이 메서드를 사용해 데이터를 Object event에 넣고 전송하면 된다.
-     *
-     * @param userId - 메세지를 전송할 사용자의 아이디.
-     * @param event  - 전송할 이벤트 객체.
+     * param userId - 메세지를 전송할 사용자의 아이디.
+     * param event  - 전송할 이벤트 객체.
      */
     public NotificationSendDto notify(NotificationSendDto notificationSendDto) {
-        Member sender = memberRepository.findById(notificationSendDto.getMember_id()).orElseThrow(()->new RestApiException(ErrorCode.USERNAME_NOT_FOUND_ERROR));
-        Post post = postRepository.findById(notificationSendDto.getPost_id()).get();
-        Member receiver = memberRepository.findById(post.getMember().getId()).orElseThrow(()->new RestApiException(ErrorCode.USERNAME_NOT_FOUND_ERROR));
-        Notification notification = new Notification(post, sender);
+        Member sender = memberRepository.findById(notificationSendDto.getReceiver_id()).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
+        Post post = postRepository.findById(notificationSendDto.getPost_id()).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
+        Member receiver = memberRepository.findById(post.getMember().getId()).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
+        Notification notification = new Notification(post, sender, receiver);
         notificationRepository.save(notification);
         sendToClient(receiver.getId(), "알림이 도착했습니다.");
         return notificationSendDto;

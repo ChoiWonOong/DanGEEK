@@ -2,10 +2,12 @@ package DanGEEK.app.domain;
 
 import DanGEEK.app.dto.PostDto;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
+@Getter
 public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +21,6 @@ public class Post extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
-
 
     public Post(String title, String contents, PostType type, Member member) {
         this.title = title;

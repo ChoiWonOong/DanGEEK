@@ -40,6 +40,10 @@ public class Member extends BaseEntity{
     @OneToMany
     @JoinColumn(name="posts")
     private List<Post> posts;
+    @OneToMany
+    @JoinColumn(name = "notifications")
+    private List<Notification> notifications;
+
     @Enumerated(EnumType.STRING)
     private Authority authority;
     @Builder

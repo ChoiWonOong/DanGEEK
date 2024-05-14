@@ -49,8 +49,8 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.accessDeniedHandler(jwtAccessDeniedHandler).authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .headers(headers -> headers.frameOptions(frameOptionsConfig -> frameOptionsConfig.sameOrigin()))
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeRequests(
-                   request->request
+                .authorizeHttpRequests(
+                        (authorizeRequests)->authorizeRequests
                                 .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/member/**").hasAnyRole("USER")
                                 .requestMatchers("/", "/**").permitAll()

@@ -24,6 +24,21 @@ public class PostService {
         postRepository.save(post);
         return postDto;
     }
+    public PostDto update(PostDto postDto){
+        Post post = postRepository.findById(postDto.getPost_id())
+                .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
+        post.setTitle(postDto.getTitle());
+        post.setContents(postDto.getContents());
+        postRepository.save(post);
+        return postDto;
+    }
+    public PostDto delete(Long post_id){
+        Post post = postRepository.findById(post_id)
+                .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
+        PostDto postDto = post.toDto();
+        postRepository.delete(post);
+        return postDto;
+    }
     public PostDto getPost(Long id){
         return postRepository.findById(id)
                 .orElseThrow(()->new RestApiException(ErrorCode.NOT_FOUND)).toDto();

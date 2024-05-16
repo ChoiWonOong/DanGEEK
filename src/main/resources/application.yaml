@@ -28,7 +28,7 @@ spring:
   freemarker:
     cache: false
 jwt:
-  secret: "145612345sfdgsadgasg3w4tg34"
+  secret: ${JWT_SECRET}
 ---
 spring:
   mvc:

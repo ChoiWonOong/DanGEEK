@@ -1,6 +1,6 @@
 package DanGEEK.app.domain;
 
-import DanGEEK.app.dto.MemberCreateResponseDto;
+import DanGEEK.app.dto.Member.MemberCreateResponseDto;
 import DanGEEK.app.dto.MyPageDto;
 import jakarta.persistence.*;
 import lombok.Builder;

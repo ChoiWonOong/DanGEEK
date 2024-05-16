@@ -2,7 +2,7 @@ package DanGEEK.app.service;
 
 import DanGEEK.app.domain.Member;
 import DanGEEK.app.domain.MemberIntroduction;
-import DanGEEK.app.dto.MemberIntroductionCreateDto;
+import DanGEEK.app.dto.Member.MemberIntroductionCreateDto;
 import DanGEEK.app.dto.MyPageDto;
 import DanGEEK.app.repository.MemberIntroductionRepository;
 import DanGEEK.app.repository.MemberRepository;

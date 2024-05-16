@@ -1,4 +1,4 @@
-package DanGEEK.app.dto;
+package DanGEEK.app.dto.Member;
 
 import lombok.Getter;
 

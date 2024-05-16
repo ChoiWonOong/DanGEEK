@@ -1,8 +1,8 @@
 package DanGEEK.app.controller;
 
-import DanGEEK.app.dto.MemberCreateRequestDto;
-import DanGEEK.app.dto.MemberCreateResponseDto;
-import DanGEEK.app.dto.MemberPasswordReassignDto;
+import DanGEEK.app.dto.Member.MemberCreateRequestDto;
+import DanGEEK.app.dto.Member.MemberCreateResponseDto;
+import DanGEEK.app.dto.Member.MemberPasswordReassignDto;
 import DanGEEK.app.dto.UnivCertification.UnivCertifyCodeRequestDto;
 import DanGEEK.app.dto.UnivCertification.UnivCertifyRequestDto;
 import DanGEEK.app.dto.token.TokenDto;

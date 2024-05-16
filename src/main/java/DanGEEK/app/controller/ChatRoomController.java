@@ -19,7 +19,7 @@ public class ChatRoomController {
     // 모든 채팅방 목록 반환
     @GetMapping("/rooms")
     @ResponseBody
-    public List<ChatRoomCreateDto> room() {
+    public List<ChatRoomCreateDto> findAllRooms() {
         return chatRoomService.findAllRooms();
     }
 

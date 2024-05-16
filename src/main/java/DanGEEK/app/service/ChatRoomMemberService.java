@@ -14,7 +14,7 @@ import java.util.List;
 public class ChatRoomMemberService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
-    public ChatRoomMemberCreateResponseDto createChatRoomMember(Long roomId, Long userId){
+    public ChatRoomMemberCreateResponseDto enterChatRoomMember(Long roomId, Long userId){
         ChatRoomMember chatRoomMember = new ChatRoomMember(roomId, userId);
         chatRoomMemberRepository.save(chatRoomMember);
         return chatRoomMember.toResponseDto();

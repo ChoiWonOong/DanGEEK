@@ -14,11 +14,12 @@ import java.util.List;
 public class ChatRoomMemberController {
     private final ChatRoomMemberService chatRoomMemberService;
     @PostMapping("/enter/{roomId}")
-    public ChatRoomMemberCreateResponseDto enterChatRoom(@PathVariable Long roomId) {
+    public ChatRoomMemberCreateResponseDto createChatRoom(@PathVariable Long roomId) {
         // 채팅방 입장
-        return chatRoomMemberService.createChatRoomMember(roomId, SecurityUtil.getCurrentMemberId());
+        return chatRoomMemberService.enterChatRoomMember(roomId, SecurityUtil.getCurrentMemberId());
     }
-    public void exitChatRoom(Long roomId) {
+    @PostMapping("/exit/{roomId}")
+    public void exitChatRoom(@PathVariable Long roomId) {
         // 채팅방 퇴장
         chatRoomMemberService.deleteChatRoomMember(roomId, SecurityUtil.getCurrentMemberId());
     }

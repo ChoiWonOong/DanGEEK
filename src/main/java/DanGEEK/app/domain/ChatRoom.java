@@ -1,16 +1,15 @@
 package DanGEEK.app.domain;
 
-import DanGEEK.app.dto.ChatRoomCreateDto;
+import DanGEEK.app.dto.chat.ChatRoomCreateDto;
+import DanGEEK.app.dto.chat.ChatRoomResponseDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
@@ -30,5 +29,8 @@ public class ChatRoom {
 
     public ChatRoom(String name) {
         this.name = name;
+    }
+    public ChatRoomResponseDto toResponseDto(){
+        return new ChatRoomResponseDto(roomId, name);
     }
 }

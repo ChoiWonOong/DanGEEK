@@ -1,8 +1,8 @@
 package DanGEEK.app.controller;
 
 import DanGEEK.app.domain.ChatRoom;
-import DanGEEK.app.dto.ChatRoomCreateDto;
-import DanGEEK.app.repository.ChatRoomRepository;
+import DanGEEK.app.dto.chat.ChatRoomCreateDto;
+import DanGEEK.app.dto.chat.ChatRoomResponseDto;
 import DanGEEK.app.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +27,7 @@ public class ChatRoomController {
     // 채팅방 생성
     @PostMapping("/room")
     @ResponseBody
-    public ChatRoom createRoom(@RequestBody ChatRoomCreateDto chatRoomCreateDto) {
+    public ChatRoomResponseDto createRoom(@RequestBody ChatRoomCreateDto chatRoomCreateDto) {
         return chatRoomService.createChatRoom(chatRoomCreateDto);
     }
 

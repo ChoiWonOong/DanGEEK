@@ -30,10 +30,13 @@ public class Chat {
         this.created_at = LocalDateTime.now();
         this.type = type;
     }
+    public ChatResponseDto toResponseDto(){
+        return new ChatResponseDto(type, roomId, sender, message, created_at);
+    }
     public static List<ChatResponseDto> toDtoList(List<Chat> chatList){
         List<ChatResponseDto> chatDtos = new ArrayList<>();
         for(Chat c : chatList){
-            ChatResponseDto dto = new ChatResponseDto(c.type, c.roomId, c.sender, c.message, c.created_at);
+            ChatResponseDto dto = c.toResponseDto();
             chatDtos.add(dto);
         }
         return chatDtos;

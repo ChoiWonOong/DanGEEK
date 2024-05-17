@@ -14,4 +14,11 @@ public class ChatRequestDto {
     public Chat toEntity(MessageType type) {
         return new Chat(roomId, sender, message, type);
     }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
+    }
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

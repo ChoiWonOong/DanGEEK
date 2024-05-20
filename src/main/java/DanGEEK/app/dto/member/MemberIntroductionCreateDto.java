@@ -1,4 +1,4 @@
-package DanGEEK.app.dto.Member;
+package DanGEEK.app.dto.member;
 
 import DanGEEK.app.domain.MemberIntroduction;
 import lombok.AllArgsConstructor;

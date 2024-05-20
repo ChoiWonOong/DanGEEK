@@ -4,7 +4,9 @@ import DanGEEK.app.Exception.ErrorCode;
 import DanGEEK.app.Exception.RestApiException;
 import DanGEEK.app.domain.Post;
 import DanGEEK.app.domain.PostType;
-import DanGEEK.app.dto.PostDto;
+import DanGEEK.app.dto.post.PostCreateRequestDto;
+import DanGEEK.app.dto.post.PostResponseDto;
+import DanGEEK.app.dto.post.PostUpdateRequestDto;
 import DanGEEK.app.repository.MemberRepository;
 import DanGEEK.app.repository.PostRepository;
 import DanGEEK.app.util.SecurityUtil;
@@ -19,33 +21,33 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-    public PostDto save(PostDto postDto){
+    public PostResponseDto save(PostCreateRequestDto postDto){
         Post post = new Post(postDto.getTitle(),postDto.getContents(), postDto.getPost_type(), memberRepository.findById(SecurityUtil.getCurrentMemberId()).get());
         postRepository.save(post);
-        return postDto;
+        return post.toDto();
     }
-    public PostDto update(PostDto postDto){
+    public PostResponseDto update(PostUpdateRequestDto postDto){
         Post post = postRepository.findById(postDto.getPost_id())
                 .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
         post.setTitle(postDto.getTitle());
         post.setContents(postDto.getContents());
         postRepository.save(post);
-        return postDto;
+        return post.toDto();
     }
-    public PostDto delete(Long post_id){
+    public PostResponseDto delete(Long post_id){
         Post post = postRepository.findById(post_id)
                 .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
-        PostDto postDto = post.toDto();
+        PostResponseDto postDto = post.toDto();
         postRepository.delete(post);
         return postDto;
     }
-    public PostDto getPost(Long id){
+    public PostResponseDto getPost(Long id){
         return postRepository.findById(id)
                 .orElseThrow(()->new RestApiException(ErrorCode.NOT_FOUND)).toDto();
     }
-    public List<PostDto> getPosts(PostType postType){
+    public List<PostResponseDto> getPosts(PostType postType){
         List<Post> postList = postRepository.findByType(postType);
-        List<PostDto> result = new LinkedList<>();
+        List<PostResponseDto> result = new LinkedList<>();
         for(Post post : postList){
             result.add(post.toDto());
         }

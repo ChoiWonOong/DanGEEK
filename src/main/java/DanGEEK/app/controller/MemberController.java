@@ -1,6 +1,6 @@
 package DanGEEK.app.controller;
 
-import DanGEEK.app.dto.Member.MemberIntroductionCreateDto;
+import DanGEEK.app.dto.member.MemberIntroductionCreateDto;
 import DanGEEK.app.dto.MyPageDto;
 import DanGEEK.app.service.MemberService;
 import lombok.RequiredArgsConstructor;

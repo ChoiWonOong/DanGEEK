@@ -1,6 +1,6 @@
 package DanGEEK.app.domain;
 
-import DanGEEK.app.dto.PostDto;
+import DanGEEK.app.dto.post.PostResponseDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,8 +30,8 @@ public class Post extends BaseEntity {
         this.type = type;
         this.member = member;
     }
-    public PostDto toDto(){
-        return new PostDto(id, title, contents, member.getId(), type);
+    public PostResponseDto toDto(){
+        return new PostResponseDto(id, title, contents, member.getId(), type);
     }
     public Member getMember() {
         return member;

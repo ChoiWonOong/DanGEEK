@@ -1,6 +1,6 @@
 package DanGEEK.app.domain;
 
-import DanGEEK.app.dto.Member.MemberIntroductionCreateDto;
+import DanGEEK.app.dto.member.MemberIntroductionCreateDto;
 import DanGEEK.app.util.StringListConverter;
 import jakarta.persistence.*;
 import lombok.Builder;

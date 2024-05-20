@@ -1,4 +1,4 @@
-package DanGEEK.app.dto.Member;
+package DanGEEK.app.dto.member;
 
 import DanGEEK.app.domain.Authority;
 import DanGEEK.app.domain.Member;

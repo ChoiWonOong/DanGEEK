@@ -1,6 +1,7 @@
 package DanGEEK.app.domain;
 
-import DanGEEK.app.dto.NotificationSendDto;
+import DanGEEK.app.dto.Notification.GroupBuyNotificationSendDto;
+import DanGEEK.app.dto.Notification.MateNotificationSendDto;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -31,7 +32,16 @@ public class Notification {
         this.receiver = receiver;
         this.readFlag = false;
     }
-    public NotificationSendDto toDto(){
-        return new NotificationSendDto(post.getId(), sender.getId(), receiver.getId(), readFlag);
+    public MateNotificationSendDto toMateNotificationDto(){
+        return new MateNotificationSendDto(post.getId(), sender.getNickname(), receiver.getNickname(), readFlag);
+    }
+    public GroupBuyNotificationSendDto toGroupBuyNotificationDto(){
+        return new GroupBuyNotificationSendDto(post.getId(), sender.getNickname(), receiver.getNickname(), readFlag);
+    }
+    public Member getSender(){
+        return sender;
+    }
+    public Post getPost(){
+        return post;
     }
 }

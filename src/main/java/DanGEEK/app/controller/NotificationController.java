@@ -1,6 +1,7 @@
 package DanGEEK.app.controller;
 
-import DanGEEK.app.dto.NotificationSendDto;
+import DanGEEK.app.dto.Notification.MateNotificationSendDto;
+import DanGEEK.app.dto.Notification.NotificationSendDto;
 import DanGEEK.app.service.NotificationService;
 import DanGEEK.app.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -29,5 +30,9 @@ public class NotificationController {
     @GetMapping("/list")
     public List<NotificationSendDto> getNotificationList(){
         return notificationService.getNotificationList();
+    }
+    @GetMapping("/{id}")
+    public NotificationSendDto getNotification(@PathVariable Long id){
+        return notificationService.getNotification(id);
     }
 }

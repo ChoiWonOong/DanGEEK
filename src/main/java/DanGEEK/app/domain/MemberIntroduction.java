@@ -4,12 +4,14 @@ import DanGEEK.app.dto.member.MemberIntroductionCreateDto;
 import DanGEEK.app.util.StringListConverter;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
 @NoArgsConstructor
+@Getter
 public class MemberIntroduction extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +43,7 @@ public class MemberIntroduction extends BaseEntity{
         this.personality = personality;
         this.hobby = hobby;
     }
-    public MemberIntroductionCreateDto introductionToDto(){
+    public MemberIntroductionCreateDto toIntroductionDto(){
         return new MemberIntroductionCreateDto(
                 name, major, grade, sex, personality, hobby
         );

@@ -4,6 +4,7 @@ import DanGEEK.app.domain.ChatRoom;
 import DanGEEK.app.dto.chat.ChatRoomCreateDto;
 import DanGEEK.app.dto.chat.ChatRoomResponseDto;
 import DanGEEK.app.service.ChatRoomService;
+import DanGEEK.app.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +18,16 @@ public class ChatRoomController {
 
 
     // 모든 채팅방 목록 반환
-    @GetMapping("/rooms")
+    @GetMapping("/listall")
     @ResponseBody
-    public List<ChatRoomCreateDto> findAllRooms() {
+    public List<ChatRoomResponseDto> findAllRooms() {
         return chatRoomService.findAllRooms();
     }
-
+    @GetMapping("/list")
+    @ResponseBody
+    public List<ChatRoomResponseDto> findMyRooms() {
+        return chatRoomService.findChatroomByUserId(SecurityUtil.getCurrentMemberId());
+    }
 
     // 채팅방 생성
     @PostMapping("/create")
@@ -31,8 +36,7 @@ public class ChatRoomController {
         return chatRoomService.createChatRoom(chatRoomCreateDto);
     }
 
-
-    // 특정 채팅방 조회
+    // 특정 채팅방 정보 보기
     @GetMapping("/{roomId}")
     @ResponseBody
     public ChatRoom roomInfo(@PathVariable Long roomId) {

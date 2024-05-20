@@ -4,6 +4,7 @@ import DanGEEK.app.Exception.ErrorCode;
 import DanGEEK.app.Exception.RestApiException;
 import DanGEEK.app.domain.Post;
 import DanGEEK.app.domain.PostType;
+import DanGEEK.app.dto.post.GroupBuyResponseDto;
 import DanGEEK.app.dto.post.PostCreateRequestDto;
 import DanGEEK.app.dto.post.PostResponseDto;
 import DanGEEK.app.dto.post.PostUpdateRequestDto;
@@ -24,7 +25,7 @@ public class PostService {
     public PostResponseDto save(PostCreateRequestDto postDto){
         Post post = new Post(postDto.getTitle(),postDto.getContents(), postDto.getPost_type(), memberRepository.findById(SecurityUtil.getCurrentMemberId()).get());
         postRepository.save(post);
-        return post.toDto();
+        return post.toResponseDto();
     }
     public PostResponseDto update(PostUpdateRequestDto postDto){
         Post post = postRepository.findById(postDto.getPost_id())
@@ -32,24 +33,24 @@ public class PostService {
         post.setTitle(postDto.getTitle());
         post.setContents(postDto.getContents());
         postRepository.save(post);
-        return post.toDto();
+        return post.toResponseDto();
     }
     public PostResponseDto delete(Long post_id){
         Post post = postRepository.findById(post_id)
                 .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
-        PostResponseDto postDto = post.toDto();
+        PostResponseDto postDto = post.toResponseDto();
         postRepository.delete(post);
         return postDto;
     }
     public PostResponseDto getPost(Long id){
         return postRepository.findById(id)
-                .orElseThrow(()->new RestApiException(ErrorCode.NOT_FOUND)).toDto();
+                .orElseThrow(()->new RestApiException(ErrorCode.NOT_FOUND)).toResponseDto();
     }
     public List<PostResponseDto> getPosts(PostType postType){
         List<Post> postList = postRepository.findByType(postType);
         List<PostResponseDto> result = new LinkedList<>();
         for(Post post : postList){
-            result.add(post.toDto());
+            result.add(post.toResponseDto());
         }
         return result;
     }

@@ -3,14 +3,10 @@ package DanGEEK.app.service;
 
 import DanGEEK.app.Exception.ErrorCode;
 import DanGEEK.app.Exception.RestApiException;
-import DanGEEK.app.domain.Member;
-import DanGEEK.app.domain.Notification;
-import DanGEEK.app.domain.Post;
-import DanGEEK.app.dto.NotificationSendDto;
-import DanGEEK.app.repository.EmitterRepository;
-import DanGEEK.app.repository.MemberRepository;
-import DanGEEK.app.repository.NotificationRepository;
-import DanGEEK.app.repository.PostRepository;
+import DanGEEK.app.domain.*;
+import DanGEEK.app.dto.Notification.MateNotificationSendDto;
+import DanGEEK.app.dto.Notification.NotificationSendDto;
+import DanGEEK.app.repository.*;
 import DanGEEK.app.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,18 +26,27 @@ public class NotificationService {
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
     private final NotificationRepository notificationRepository;
+    private final MemberIntroductionRepository memberIntroductionRepository;
 
-    /**
-     * 클라이언트가 구독을 위해 호출하는 메서드.
-     * param userId - 구독하는 클라이언트의 사용자 아이디.
-     * return SseEmitter - 서버에서 보낸 이벤트 Emitter
-     */
+    public MateNotificationSendDto getNotification(Long id){
+        Notification notification = notificationRepository.findById(id).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
+        MemberIntroduction memberIntroduction = memberIntroductionRepository.findByMember(notification.getSender())
+                .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
+        MateNotificationSendDto notificationSendDto = notification.toMateNotificationDto();
+        notificationSendDto.setMemberIntroductionCreateDto(memberIntroduction.toIntroductionDto());
+        return notificationSendDto;
+    }
     public List<NotificationSendDto> getNotificationList(){
         List<Notification> notificationList = notificationRepository.findAllByReceiver(memberRepository.findById(SecurityUtil.getCurrentMemberId())
                 .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR)));
         List<NotificationSendDto> notificationSendDtoList = new ArrayList<>();
         for(Notification n : notificationList){
-            notificationSendDtoList.add(n.toDto());
+            if(n.getPost().getType().equals(PostType.INVITE)){
+                notificationSendDtoList.add(n.toMateNotificationDto());
+            }
+            else if(n.getPost().getType().equals(PostType.GROUP_BUY)){
+                notificationSendDtoList.add(n.toGroupBuyNotificationDto());
+            }
         }
         return notificationSendDtoList;
     }
@@ -59,9 +64,12 @@ public class NotificationService {
      * param event  - 전송할 이벤트 객체.
      */
     public NotificationSendDto notify(NotificationSendDto notificationSendDto) {
-        Member sender = memberRepository.findById(notificationSendDto.getReceiver_id()).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
-        Post post = postRepository.findById(notificationSendDto.getPost_id()).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
-        Member receiver = memberRepository.findById(post.getMember().getId()).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
+        Member sender = memberRepository.findByNickname(notificationSendDto.getSender())
+                .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
+        Post post = postRepository.findById(notificationSendDto.getPost_id())
+                .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
+        Member receiver = memberRepository.findByNickname(notificationSendDto.getReceiver())
+                .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
         Notification notification = new Notification(post, sender, receiver);
         notificationRepository.save(notification);
         sendToClient(receiver.getId(), "알림이 도착했습니다.");

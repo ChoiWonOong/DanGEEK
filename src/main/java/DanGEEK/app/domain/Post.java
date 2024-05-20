@@ -1,5 +1,7 @@
 package DanGEEK.app.domain;
 
+import DanGEEK.app.dto.post.GroupBuyResponseDto;
+import DanGEEK.app.dto.post.MateInviteResponseDto;
 import DanGEEK.app.dto.post.PostResponseDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -30,8 +32,12 @@ public class Post extends BaseEntity {
         this.type = type;
         this.member = member;
     }
-    public PostResponseDto toDto(){
-        return new PostResponseDto(id, title, contents, member.getId(), type);
+    public PostResponseDto toResponseDto() {
+        if (type == PostType.GROUP_BUY) {
+            return new GroupBuyResponseDto(id, title, contents, member.getNickname(), type);
+        } else {
+            return new MateInviteResponseDto(id, title, contents, member.getNickname(), type);
+        }
     }
     public Member getMember() {
         return member;

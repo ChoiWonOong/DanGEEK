@@ -93,4 +93,8 @@ public class Member extends BaseEntity{
     public Authority getAuthority() {
         return authority;
     }
+
+    public String getNickname() {
+        return nickname;
+    }
 }

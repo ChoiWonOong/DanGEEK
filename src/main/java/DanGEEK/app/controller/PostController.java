@@ -1,6 +1,7 @@
 package DanGEEK.app.controller;
 
 import DanGEEK.app.domain.PostType;
+import DanGEEK.app.dto.post.GroupBuyResponseDto;
 import DanGEEK.app.dto.post.PostCreateRequestDto;
 import DanGEEK.app.dto.post.PostResponseDto;
 import DanGEEK.app.service.PostService;

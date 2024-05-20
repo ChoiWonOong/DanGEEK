@@ -23,4 +23,8 @@ public class ChatRoomMember {
     public ChatRoomMemberCreateResponseDto toResponseDto(){
         return new ChatRoomMemberCreateResponseDto("success", roomId, userId);
     }
+
+    public Long getRoomId() {
+        return roomId;
+    }
 }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/chat")
+@RequestMapping("/chatroom")
 @RequiredArgsConstructor
 public class ChatRoomMemberController {
     private final ChatRoomMemberService chatRoomMemberService;
@@ -22,8 +22,8 @@ public class ChatRoomMemberController {
         // 채팅방 퇴장
         chatRoomMemberService.deleteChatRoomMember(roomId, sender);
     }
-    @GetMapping("/members")
-    public List<String> getChatRoomMembers(Long roomId) {
+    @GetMapping("/members/{roomId}")
+    public List<String> getChatRoomMembers(@PathVariable Long roomId) {
         // 채팅방 참여자 목록 조회
         return chatRoomMemberService.findAllMemberNameByRoomId(roomId);
     }

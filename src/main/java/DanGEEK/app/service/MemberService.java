@@ -32,12 +32,12 @@ public class MemberService {
     public MemberIntroductionCreateDto getMyIntroduction(){
         Member member = getMe();
         MemberIntroduction memberIntroduction = member.getIntroduction();
-        return memberIntroduction.introductionToDto();
+        return memberIntroduction.toIntroductionDto();
     }
     public MemberIntroductionCreateDto getMemberIntroduction(Long id){
         Member member = memberRepository.findById(id).get();
         MemberIntroduction memberIntroduction = member.getIntroduction();
-        return memberIntroduction.introductionToDto();
+        return memberIntroduction.toIntroductionDto();
     }
     private Member getMe(){
         return memberRepository.findById(SecurityUtil.getCurrentMemberId()).get();

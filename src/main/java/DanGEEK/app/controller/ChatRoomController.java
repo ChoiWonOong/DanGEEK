@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/chat")
+@RequestMapping("/chatroom")
 @RequiredArgsConstructor
 public class ChatRoomController {
 
@@ -25,7 +25,7 @@ public class ChatRoomController {
 
 
     // 채팅방 생성
-    @PostMapping("/room")
+    @PostMapping("/create")
     @ResponseBody
     public ChatRoomResponseDto createRoom(@RequestBody ChatRoomCreateDto chatRoomCreateDto) {
         return chatRoomService.createChatRoom(chatRoomCreateDto);
@@ -33,7 +33,7 @@ public class ChatRoomController {
 
 
     // 특정 채팅방 조회
-    @GetMapping("/room/{roomId}")
+    @GetMapping("/{roomId}")
     @ResponseBody
     public ChatRoom roomInfo(@PathVariable Long roomId) {
         return chatRoomService.findRoomById(roomId);

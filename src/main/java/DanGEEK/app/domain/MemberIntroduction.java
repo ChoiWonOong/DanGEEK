@@ -17,7 +17,8 @@ public class MemberIntroduction extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "introduction")
+    @OneToOne
+    @JoinColumn(name="member_id")
     private Member member;
     @Column(name="name", nullable = false)
     private String name;
@@ -27,6 +28,8 @@ public class MemberIntroduction extends BaseEntity{
     private String grade;
     @Column(name="sex", nullable = false)
     private String sex;
+    @Column(name = "contents", nullable = false)
+    private String contents;
     @Column(name="personality", nullable = false)
     @Convert(converter = StringListConverter.class)
     private List<String> personality;
@@ -35,17 +38,19 @@ public class MemberIntroduction extends BaseEntity{
     private List<String> hobby;
 
     @Builder
-    public MemberIntroduction(String name, String major, String grade, String sex, List<String> personality, List<String> hobby){
+    public MemberIntroduction(String name, String major, String grade, String sex, String contents, List<String> personality, List<String> hobby, Member member){
         this.name = name;
         this.major = major;
         this.grade = grade;
         this.sex = sex;
         this.personality = personality;
         this.hobby = hobby;
+        this.member = member;
+        this.contents = contents;
     }
     public MemberIntroductionCreateDto toIntroductionDto(){
         return new MemberIntroductionCreateDto(
-                name, major, grade, sex, personality, hobby
+                this.name, this.major, this.grade, this.sex, this.personality, this.hobby, this.contents
         );
     }
 }

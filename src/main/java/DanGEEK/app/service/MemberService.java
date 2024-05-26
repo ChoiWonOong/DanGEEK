@@ -8,9 +8,13 @@ import DanGEEK.app.repository.MemberIntroductionRepository;
 import DanGEEK.app.repository.MemberRepository;
 import DanGEEK.app.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -19,11 +23,12 @@ public class MemberService {
 
     @Transactional
     public MemberIntroductionCreateDto writeIntroduction(MemberIntroductionCreateDto memberIntroductionCreateDto){
-        MemberIntroduction memberIntroduction = memberIntroductionCreateDto.toMemberIntroduction();
         Member member = getMe();
+        MemberIntroduction memberIntroduction = memberIntroductionCreateDto.toMemberIntroduction(member);
+        log.info("memberIntroduction contents : {}",memberIntroduction.getContents());
         member.writeIntroduction(memberIntroduction);
         memberIntroductionRepository.save(memberIntroduction);
-        return memberIntroductionCreateDto;
+        return member.getIntroduction().toIntroductionDto();
     }
     public MyPageDto getMyPage(){
         Member member = getMe();
@@ -42,15 +47,22 @@ public class MemberService {
     public MyPageDto releaseMember(){
         Member member = getMe();
         member.changePutOutToRecommend(true);
+        memberRepository.save(member);
         return member.MemberToMyPageDto();
     }
     public MyPageDto holdMember(){
         Member member = getMe();
         member.changePutOutToRecommend(false);
+        memberRepository.save(member);
         return member.MemberToMyPageDto();
     }
     private Member getMe(){
         return memberRepository.findById(SecurityUtil.getCurrentMemberId()).get();
     }
 
+    public List<MemberIntroductionCreateDto> getRecommendedInstruction() {
+        List<Member> members = memberRepository.findAllByPutOnRecommend(true);
+        List<MemberIntroduction> introductions = members.stream().map(Member::getIntroduction).toList();
+        return introductions.stream().map(MemberIntroduction::toIntroductionDto).toList();
+    }
 }

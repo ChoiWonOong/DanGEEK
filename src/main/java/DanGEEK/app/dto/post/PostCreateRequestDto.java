@@ -2,8 +2,10 @@ package DanGEEK.app.dto.post;
 
 import DanGEEK.app.domain.PostType;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public class PostCreateRequestDto {
     //base field
     private String title;

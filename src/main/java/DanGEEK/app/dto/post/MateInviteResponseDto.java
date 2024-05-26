@@ -7,11 +7,11 @@ import lombok.Setter;
 
 @Getter
 public class MateInviteResponseDto extends PostResponseDto{
-    private MemberIntroductionCreateDto memberIntroductionCreateDto;
+    private MemberIntroductionCreateDto memberIntroduction;
     public MateInviteResponseDto(Long post_id, String title, String contents, String nickname, String post_type) {
         super(post_id, title, contents, nickname, post_type);
     }
     public void setMemberIntroductionCreateDto(MemberIntroductionCreateDto memberIntroductionCreateDto) {
-        this.memberIntroductionCreateDto = memberIntroductionCreateDto;
+        this.memberIntroduction = memberIntroductionCreateDto;
     }
 }

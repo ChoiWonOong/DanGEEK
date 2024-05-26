@@ -39,7 +39,18 @@ public class MemberService {
         MemberIntroduction memberIntroduction = member.getIntroduction();
         return memberIntroduction.toIntroductionDto();
     }
+    public MyPageDto releaseMember(){
+        Member member = getMe();
+        member.changePutOutToRecommend(true);
+        return member.MemberToMyPageDto();
+    }
+    public MyPageDto holdMember(){
+        Member member = getMe();
+        member.changePutOutToRecommend(false);
+        return member.MemberToMyPageDto();
+    }
     private Member getMe(){
         return memberRepository.findById(SecurityUtil.getCurrentMemberId()).get();
     }
+
 }

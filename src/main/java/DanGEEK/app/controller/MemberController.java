@@ -26,4 +26,12 @@ public class MemberController {
     public ResponseEntity<MemberIntroductionCreateDto> getMemberIntroduction(@PathVariable Long id){
         return ResponseEntity.ok(memberService.getMemberIntroduction(id));
     }
+    @GetMapping("/release")
+    public ResponseEntity<MyPageDto> releaseMember(){
+        return ResponseEntity.ok(memberService.releaseMember());
+    }
+    @GetMapping("/hold")
+    public ResponseEntity<MyPageDto> holdMember(){
+        return ResponseEntity.ok(memberService.holdMember());
+    }
 }

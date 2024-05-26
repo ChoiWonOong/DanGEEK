@@ -72,8 +72,8 @@ public class Member extends BaseEntity{
         this.introductionWritten = true;
         this.introduction = memberIntroduction;
     }
-    public void changePutOutToRecommend(){
-        this.putOnRecommend= !this.putOnRecommend;
+    public void changePutOutToRecommend(Boolean putOnRecommend){
+        this.putOnRecommend= putOnRecommend;
     }
     public MyPageDto MemberToMyPageDto(){
         return new MyPageDto(this.username, this.nickname, this.introductionWritten, this.putOnRecommend);

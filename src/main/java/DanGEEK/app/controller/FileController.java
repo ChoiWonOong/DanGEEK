@@ -1,3 +1,4 @@
+/*
 package DanGEEK.app.controller;
 
 import DanGEEK.app.dto.FileDto;
@@ -21,3 +22,4 @@ public class FileController {
         return fileService.save(fileDto);
     }
 }
+*/

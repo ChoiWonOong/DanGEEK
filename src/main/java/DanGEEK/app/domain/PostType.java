@@ -14,4 +14,12 @@ public enum PostType {
     public String getString(){
         return this.type;
     }
+    public static PostType getPostType(String type){
+        return switch (type) {
+            case "invite" -> INVITE;
+            case "group_buy" -> GROUP_BUY;
+            case "complain" -> COMPLAIN;
+            default -> null;
+        };
+    }
 }

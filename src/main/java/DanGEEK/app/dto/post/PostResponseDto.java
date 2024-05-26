@@ -11,5 +11,5 @@ public abstract class PostResponseDto {
     private String title;
     private String contents;
     private String nickname;
-    private PostType post_type;
+    private String post_type;
 }

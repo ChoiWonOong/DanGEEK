@@ -9,7 +9,7 @@ public class PostCreateRequestDto {
     private String title;
     private String contents;
     private Long userId;
-    private PostType post_type;
+    private String post_type;
     private String imageUrl;
     //invite, group buy field
     private Long inviteNumber;
@@ -20,8 +20,10 @@ public class PostCreateRequestDto {
     private String price;
     //complain field
     private String roomNumber;
+    //post update field
+    private Long postId;
 
-    public void setPost_type(PostType post_type) {
+    public void setPost_type(String post_type) {
         this.post_type = post_type;
     }
     public PostCreateRequestDto(String title, String content, Long userId) {

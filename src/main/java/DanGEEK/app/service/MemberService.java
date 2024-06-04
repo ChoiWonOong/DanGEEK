@@ -1,5 +1,7 @@
 package DanGEEK.app.service;
 
+import DanGEEK.app.Exception.ErrorCode;
+import DanGEEK.app.Exception.RestApiException;
 import DanGEEK.app.domain.Member;
 import DanGEEK.app.domain.MemberIntroduction;
 import DanGEEK.app.dto.member.MemberIntroductionCreateDto;
@@ -40,7 +42,7 @@ public class MemberService {
         return memberIntroduction.toIntroductionDto();
     }
     public MemberIntroductionCreateDto getMemberIntroduction(Long id){
-        Member member = memberRepository.findById(id).get();
+        Member member = memberRepository.findById(id).orElseThrow(()-> new RestApiException(ErrorCode.NOT_EXIST_ERROR));
         MemberIntroduction memberIntroduction = member.getIntroduction();
         return memberIntroduction.toIntroductionDto();
     }
@@ -57,12 +59,14 @@ public class MemberService {
         return member.MemberToMyPageDto();
     }
     private Member getMe(){
-        return memberRepository.findById(SecurityUtil.getCurrentMemberId()).get();
+        return memberRepository.findById(SecurityUtil.getCurrentMemberId()).orElseThrow(()-> new RestApiException(ErrorCode.NOT_EXIST_ERROR));
     }
 
     public List<MemberIntroductionCreateDto> getRecommendedInstruction() {
-        List<Member> members = memberRepository.findAllByPutOnRecommend(true);
-        List<MemberIntroduction> introductions = members.stream().map(Member::getIntroduction).toList();
+        List<Member> recommendMembers = memberRepository.findById(SecurityUtil.getCurrentMemberId())
+                .orElseThrow(()-> new RestApiException(ErrorCode.NOT_EXIST_ERROR)).getRecommendMembers();
+        //List<Member> members = memberRepository.findAllByPutOnRecommend(true);
+        List<MemberIntroduction> introductions = recommendMembers.stream().map(Member::getIntroduction).toList();
         return introductions.stream().map(MemberIntroduction::toIntroductionDto).toList();
     }
 }

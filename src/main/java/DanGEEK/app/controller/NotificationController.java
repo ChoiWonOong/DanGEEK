@@ -1,6 +1,5 @@
 package DanGEEK.app.controller;
 
-import DanGEEK.app.dto.Notification.MateNotificationSendDto;
 import DanGEEK.app.dto.Notification.NotificationSendDto;
 import DanGEEK.app.service.NotificationService;
 import DanGEEK.app.util.SecurityUtil;
@@ -24,7 +23,7 @@ public class NotificationController {
     }
 
     @PostMapping("/send-data")
-    public ResponseEntity<NotificationSendDto> sendData(@RequestBody NotificationSendDto notificationSendDto) {
+   public ResponseEntity<NotificationSendDto> sendData(@RequestBody NotificationSendDto notificationSendDto) {
         return ResponseEntity.ok(notificationService.notify(notificationSendDto));
     }
     @GetMapping("/list")

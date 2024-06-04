@@ -13,14 +13,14 @@ import java.util.List;
 public class ChatRoomMemberController {
     private final ChatRoomMemberService chatRoomMemberService;
     @PostMapping("/enter/{roomId}")
-    public ChatRoomMemberCreateResponseDto createChatRoom(@PathVariable Long roomId, String sender) {
+    public ChatRoomMemberCreateResponseDto createChatRoom(@PathVariable Long roomId, Long senderId) {
         // 채팅방 입장
-        return chatRoomMemberService.enterChatRoomMember(roomId, sender);
+        return chatRoomMemberService.enterChatRoomMember(roomId, senderId);
     }
     @PostMapping("/exit/{roomId}")
-    public void exitChatRoom(@PathVariable Long roomId, String sender) {
+    public void exitChatRoom(@PathVariable Long roomId, Long senderId) {
         // 채팅방 퇴장
-        chatRoomMemberService.deleteChatRoomMember(roomId, sender);
+        chatRoomMemberService.deleteChatRoomMember(roomId, senderId);
     }
     @GetMapping("/members/{roomId}")
     public List<String> getChatRoomMembers(@PathVariable Long roomId) {

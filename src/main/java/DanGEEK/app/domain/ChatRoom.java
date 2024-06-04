@@ -6,7 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +16,11 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 public class ChatRoom {
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
+    @Setter
     private String name;
     public static List<ChatRoomCreateDto> toDtoList(List<ChatRoom> chatRoomList){
         List<ChatRoomCreateDto> roomDtos = new ArrayList<>();

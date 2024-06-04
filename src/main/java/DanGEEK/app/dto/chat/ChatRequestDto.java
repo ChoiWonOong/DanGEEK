@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 public class ChatRequestDto {
     private Long roomId;
     private String message;
-    private String sender;
+    private Long senderId;
     public Chat toEntity(MessageType type) {
-        return new Chat(roomId, sender, message, type);
+        return new Chat(roomId, senderId, message, type);
     }
 
     public void setRoomId(Long roomId) {

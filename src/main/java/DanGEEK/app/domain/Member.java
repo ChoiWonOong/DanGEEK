@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +44,8 @@ public class Member extends BaseEntity{
     @OneToMany
     @JoinColumn(name = "notifications")
     private List<Notification> notifications;
-
+    @OneToMany
+    private List<Member> recommendOrder = new ArrayList<>();
     @Enumerated(EnumType.STRING)
     private Authority authority;
     @Builder
@@ -96,5 +98,9 @@ public class Member extends BaseEntity{
 
     public String getNickname() {
         return nickname;
+    }
+
+    public List<Member> getRecommendMembers() {
+        return recommendOrder;
     }
 }

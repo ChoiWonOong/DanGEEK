@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@RestController
 @RequestMapping("/chatroom")
 @RequiredArgsConstructor
 public class ChatRoomController {
@@ -18,12 +18,12 @@ public class ChatRoomController {
 
 
     // 모든 채팅방 목록 반환
-    @GetMapping("/listall")
+    @GetMapping("/list")
     @ResponseBody
     public List<ChatRoomResponseDto> findAllRooms() {
         return chatRoomService.findAllRooms();
     }
-    @GetMapping("/list")
+    @GetMapping("/my")
     @ResponseBody
     public List<ChatRoomResponseDto> findMyRooms() {
         return chatRoomService.findChatroomByUserId(SecurityUtil.getCurrentMemberId());

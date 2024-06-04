@@ -1,10 +1,7 @@
 package DanGEEK.app.domain;
 
 import DanGEEK.app.dto.chat.ChatRoomMemberCreateResponseDto;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -13,18 +10,32 @@ public class ChatRoomMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long userId;
-    private Long roomId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Member userId;
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private ChatRoom roomId;
 
-    public ChatRoomMember(Long userId, Long roomId) {
-        this.userId = userId;
-        this.roomId = roomId;
+    private int unreadCount = 0;
+    public ChatRoomMember(Member member, ChatRoom chatRoom) {
+        this.userId = member;
+        this.roomId = chatRoom;
     }
     public ChatRoomMemberCreateResponseDto toResponseDto(){
-        return new ChatRoomMemberCreateResponseDto("success", roomId, userId);
+        return new ChatRoomMemberCreateResponseDto("success", getRoomId(), getMemberId());
     }
 
-    public Long getRoomId() {
-        return roomId;
+    public Long getMemberId() {
+        return userId.getId();
+    }
+    public Long getRoomId(){
+        return roomId.getRoomId();
+    }
+    public void increaseUnreadCount(){
+        unreadCount++;
+    }
+    public void resetUnreadCount(){
+        unreadCount = 0;
     }
 }

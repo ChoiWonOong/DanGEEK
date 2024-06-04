@@ -12,6 +12,7 @@ public class ChatResponseDto {
     private MessageType type;
     private Long roomId;
     private String message;
-    private String sender;
+    private Long senderId;
+    private String senderNickname;
     private LocalDateTime created_at;
 }

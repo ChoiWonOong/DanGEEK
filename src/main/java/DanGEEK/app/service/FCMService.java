@@ -1,9 +1,14 @@
 package DanGEEK.app.service;
 
+import DanGEEK.app.domain.FCMToken;
+import DanGEEK.app.domain.Member;
 import DanGEEK.app.dto.FCMRequestDto;
 import DanGEEK.app.dto.FCMSendDto;
+import DanGEEK.app.dto.token.FCMTokenDto;
+import DanGEEK.app.repository.FCMTokenRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -13,7 +18,9 @@ import java.io.IOException;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class FCMService {
+    private final FCMTokenRepository fcmRepository;
     /**
      * 푸시 메시지 처리를 수행하는 비즈니스 로직
      *
@@ -67,5 +74,12 @@ public class FCMService {
 
         return om.writeValueAsString(fcmSendDto);
     }
-
+    public void saveToken(Member member, String token){
+        if(fcmRepository.existsByMember(member)){
+            FCMToken fcmToken = fcmRepository.findByMember(member);
+            fcmToken.updateToken(token);
+        }
+        FCMToken fcmToken = new FCMToken(member, token);
+        fcmRepository.save(fcmToken);
+    }
 }

@@ -58,7 +58,7 @@ public class MemberService {
         memberRepository.save(member);
         return member.MemberToMyPageDto();
     }
-    private Member getMe(){
+    public Member getMe(){
         return memberRepository.findById(SecurityUtil.getCurrentMemberId()).orElseThrow(()-> new RestApiException(ErrorCode.NOT_EXIST_ERROR));
     }
 

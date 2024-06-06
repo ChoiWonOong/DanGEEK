@@ -44,6 +44,11 @@ public class Member extends BaseEntity{
     @OneToMany
     @JoinColumn(name = "notifications")
     private List<Notification> notifications;
+
+    @OneToOne
+    @JoinColumn(name = "fcm_token")
+    private FCMToken fcmToken;
+
     @OneToMany
     private List<Member> recommendOrder = new ArrayList<>();
     @Enumerated(EnumType.STRING)

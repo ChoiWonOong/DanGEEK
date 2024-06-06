@@ -6,15 +6,15 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
+@IdClass(ChatMemberId.class)
 public class ChatRoomMember {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @Id
     private Member userId;
     @ManyToOne
     @JoinColumn(name = "room_id")
+    @Id
     private ChatRoom roomId;
 
     private int unreadCount = 0;

@@ -1,7 +1,8 @@
 package DanGEEK.app.dto.member;
 
-import DanGEEK.app.domain.Member;
-import DanGEEK.app.domain.MemberIntroduction;
+import DanGEEK.app.domain.Member.Member;
+import DanGEEK.app.domain.Member.MemberHobby;
+import DanGEEK.app.domain.Member.MemberIntroduction;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,18 +18,24 @@ public class MemberIntroductionCreateDto {
     private String grade;
     private String sex;
     private List<String> personality;
-    private List<String> hobby;
+    private List<String> hobbies;
     private String contents;
-    public MemberIntroduction toMemberIntroduction(Member member){
+    public MemberIntroduction toMemberIntroduction(Member member, List<MemberHobby> hobbyList){
         return MemberIntroduction.builder()
                 .name(name)
                 .major(major)
                 .grade(grade)
                 .sex(sex)
                 .personality(personality)
-                .hobby(hobby)
+                .hobbyList(hobbyList)
                 .contents(contents)
                 .member(member)
                 .build();
     }
+    public MemberIntroductionCreateDto toIntroductionDto(List<String> hobbies){
+        return new MemberIntroductionCreateDto(
+                this.name, this.major, this.grade, this.sex, this.personality, hobbies, this.contents
+        );
+    }
+
 }

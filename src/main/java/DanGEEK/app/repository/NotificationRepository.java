@@ -1,6 +1,6 @@
 package DanGEEK.app.repository;
 
-import DanGEEK.app.domain.Member;
+import DanGEEK.app.domain.Member.Member;
 import DanGEEK.app.domain.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 

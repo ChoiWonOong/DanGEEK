@@ -22,7 +22,7 @@ public class ChatController {
         // 현재 유저의 입장 메시지 채팅 전송, DB에 저장
         chatService.enterChatRoom(chatRoomId, chatRequestDto);
         // 현재 유저와 채팅방 사이의 관계 매핑
-        chatRoomMemberService.enterChatRoomMember(chatRoomId, chatRequestDto.getSenderId());
+        chatRoomMemberService.createChatRoomMember(chatRoomId, chatRequestDto.getSenderId());
     }
     @MessageMapping("/chatroom/exit/{chatRoomId}")
     public void exit(@DestinationVariable(value = "chatRoomId") Long chatRoomId, ChatRequestDto chatRequestDto) {

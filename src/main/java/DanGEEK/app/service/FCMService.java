@@ -1,10 +1,9 @@
 package DanGEEK.app.service;
 
 import DanGEEK.app.domain.FCMToken;
-import DanGEEK.app.domain.Member;
+import DanGEEK.app.domain.Member.Member;
 import DanGEEK.app.dto.FCMRequestDto;
 import DanGEEK.app.dto.FCMSendDto;
-import DanGEEK.app.dto.token.FCMTokenDto;
 import DanGEEK.app.repository.FCMTokenRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;

@@ -1,7 +1,7 @@
 package DanGEEK.app.repository;
 
-import DanGEEK.app.domain.Member;
-import DanGEEK.app.domain.MemberIntroduction;
+import DanGEEK.app.domain.Member.Member;
+import DanGEEK.app.domain.Member.MemberIntroduction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

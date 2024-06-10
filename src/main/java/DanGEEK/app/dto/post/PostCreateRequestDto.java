@@ -1,8 +1,8 @@
 package DanGEEK.app.dto.post;
 
-import DanGEEK.app.domain.PostType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @RequiredArgsConstructor
@@ -11,6 +11,7 @@ public class PostCreateRequestDto {
     private String title;
     private String contents;
     private Long userId;
+    @Setter
     private String post_type;
     private String imageUrl;
     //invite, group buy field
@@ -24,10 +25,8 @@ public class PostCreateRequestDto {
     private String roomNumber;
     //post update field
     private Long postId;
+    private int maxUser;
 
-    public void setPost_type(String post_type) {
-        this.post_type = post_type;
-    }
     public PostCreateRequestDto(String title, String content, Long userId) {
         this.title = title;
         this.contents = content;

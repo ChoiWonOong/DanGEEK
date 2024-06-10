@@ -1,5 +1,6 @@
 package DanGEEK.app.domain;
 
+import DanGEEK.app.domain.Member.Member;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.NoArgsConstructor;

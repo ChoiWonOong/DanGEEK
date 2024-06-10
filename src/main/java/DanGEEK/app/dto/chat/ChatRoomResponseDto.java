@@ -6,9 +6,10 @@ import lombok.Getter;
 public class ChatRoomResponseDto {
     private Long id;
     private String name;
-
-    public ChatRoomResponseDto(Long id, String name) {
+    private int maxUser;
+    public ChatRoomResponseDto(Long id, String name, int maxUser) {
         this.id = id;
         this.name = name;
+        this.maxUser = maxUser;
     }
 }

@@ -4,6 +4,8 @@ package DanGEEK.app.service;
 import DanGEEK.app.Exception.ErrorCode;
 import DanGEEK.app.Exception.RestApiException;
 import DanGEEK.app.domain.*;
+import DanGEEK.app.domain.Member.Member;
+import DanGEEK.app.domain.Member.MemberIntroduction;
 import DanGEEK.app.dto.Notification.MateNotificationSendDto;
 import DanGEEK.app.dto.Notification.NotificationSendDto;
 import DanGEEK.app.repository.*;

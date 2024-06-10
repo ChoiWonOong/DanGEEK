@@ -1,7 +1,7 @@
 package DanGEEK.app.dto.member;
 
 import DanGEEK.app.domain.Authority;
-import DanGEEK.app.domain.Member;
+import DanGEEK.app.domain.Member.Member;
 import lombok.Getter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +22,6 @@ public class MemberCreateRequestDto {
                 .build();
     }
     public UsernamePasswordAuthenticationToken toAuthentication() {
-        UsernamePasswordAuthenticationToken token =new UsernamePasswordAuthenticationToken(username, password);
-        return token;
+        return new UsernamePasswordAuthenticationToken(username, password);
     }
 }

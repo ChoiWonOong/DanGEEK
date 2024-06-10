@@ -1,10 +1,13 @@
-package DanGEEK.app.domain;
+package DanGEEK.app.domain.Member;
 
+import DanGEEK.app.domain.*;
 import DanGEEK.app.dto.member.MemberCreateResponseDto;
 import DanGEEK.app.dto.MyPageDto;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -16,7 +19,8 @@ import java.util.List;
 @Entity
 @Table(name = "member")
 @NoArgsConstructor
-public class Member extends BaseEntity{
+public class Member extends BaseEntity {
+    @Getter
     @Id
     @Column(name ="member_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,9 +28,11 @@ public class Member extends BaseEntity{
     @Column(nullable = false)
     private String username;
 
+    @Getter
     @Column(nullable = false)
     private String password;
 
+    @Getter
     @Column(nullable = false)
     private String nickname;
     @Column(nullable = false)
@@ -34,10 +40,13 @@ public class Member extends BaseEntity{
 
     @Column(nullable = false)
     private Boolean putOnRecommend = false;
+    @Getter
     @OneToOne
     @JoinColumn(name="introduction_id")
     private MemberIntroduction introduction;
-
+    @Setter
+    @Column(name = "image_url")
+    private String imageUrl;
     @OneToMany
     @JoinColumn(name="posts")
     private List<Post> posts;
@@ -51,6 +60,8 @@ public class Member extends BaseEntity{
 
     @OneToMany
     private List<Member> recommendOrder = new ArrayList<>();
+
+    @Getter
     @Enumerated(EnumType.STRING)
     private Authority authority;
     @Builder
@@ -71,11 +82,10 @@ public class Member extends BaseEntity{
                 Collections.singleton(grantedAuthority)
         );
     }
-    public Member passwordReassign(String password){
+    public void passwordReassign(String password){
         this.password = password;
-        return this;
     }
-    public void writeIntroduction(MemberIntroduction memberIntroduction){
+    public void  writeIntroduction(MemberIntroduction memberIntroduction){
         this.introductionWritten = true;
         this.introduction = memberIntroduction;
     }
@@ -83,26 +93,7 @@ public class Member extends BaseEntity{
         this.putOnRecommend= putOnRecommend;
     }
     public MyPageDto MemberToMyPageDto(){
-        return new MyPageDto(this.username, this.nickname, this.introductionWritten, this.putOnRecommend);
-    }
-    public MemberIntroduction getIntroduction(){
-        return this.introduction;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Authority getAuthority() {
-        return authority;
-    }
-
-    public String getNickname() {
-        return nickname;
+        return new MyPageDto(this.username, this.nickname, this.introductionWritten, this.putOnRecommend, this.imageUrl);
     }
 
     public List<Member> getRecommendMembers() {

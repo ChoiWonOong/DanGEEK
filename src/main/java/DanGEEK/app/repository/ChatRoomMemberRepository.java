@@ -2,7 +2,7 @@ package DanGEEK.app.repository;
 
 import DanGEEK.app.domain.ChatRoom;
 import DanGEEK.app.domain.ChatRoomMember;
-import DanGEEK.app.domain.Member;
+import DanGEEK.app.domain.Member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

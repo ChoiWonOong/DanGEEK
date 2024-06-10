@@ -2,7 +2,7 @@ package DanGEEK.app.service;
 
 import DanGEEK.app.Exception.ErrorCode;
 import DanGEEK.app.Exception.RestApiException;
-import DanGEEK.app.domain.Member;
+import DanGEEK.app.domain.Member.Member;
 import DanGEEK.app.dto.member.MemberCreateRequestDto;
 import DanGEEK.app.dto.member.MemberCreateResponseDto;
 import DanGEEK.app.dto.member.MemberPasswordReassignDto;

@@ -4,8 +4,7 @@ import DanGEEK.app.Exception.ErrorCode;
 import DanGEEK.app.Exception.RestApiException;
 import DanGEEK.app.domain.ChatRoom;
 import DanGEEK.app.domain.ChatRoomMember;
-import DanGEEK.app.domain.Member;
-import DanGEEK.app.dto.chat.ChatRoomMemberCreateResponseDto;
+import DanGEEK.app.domain.Member.Member;
 import DanGEEK.app.repository.ChatRoomMemberRepository;
 import DanGEEK.app.repository.ChatRoomRepository;
 import DanGEEK.app.repository.MemberRepository;
@@ -20,19 +19,19 @@ public class ChatRoomMemberService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final MemberRepository memberRepository;
-    public ChatRoomMemberCreateResponseDto enterChatRoomMember(Long roomId, Long senderId){
+    public ChatRoomMember createChatRoomMember(Long roomId, Long senderId){
         Member member= memberRepository.findById(senderId).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
         ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
         ChatRoomMember chatRoomMember = new ChatRoomMember(member, chatRoom);
         chatRoomMemberRepository.save(chatRoomMember);
-        return chatRoomMember.toResponseDto();
+        return chatRoomMember;
     }
     //방 나가기
     public void deleteChatRoomMember(Long roomId, Long senderId){
         ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
         Member member = memberRepository.findById(senderId).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
         chatRoomMemberRepository.deleteAllByRoomIdAndUserId(chatRoom, member);
-        if(chatRoomMemberRepository.findAllByRoomId(chatRoom).size() == 0){
+        if(chatRoomMemberRepository.findAllByRoomId(chatRoom).isEmpty()){
             chatRoomRepository.deleteById(roomId);
         }
     }

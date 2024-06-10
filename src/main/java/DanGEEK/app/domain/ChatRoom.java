@@ -22,19 +22,24 @@ public class ChatRoom {
     private Long roomId;
     @Setter
     private String name;
+
+    @Getter
+    @Setter
+    private int maxUser = 2;
     public static List<ChatRoomCreateDto> toDtoList(List<ChatRoom> chatRoomList){
         List<ChatRoomCreateDto> roomDtos = new ArrayList<>();
         for(ChatRoom r : chatRoomList){
-            ChatRoomCreateDto dto = new ChatRoomCreateDto(r.name);
+            ChatRoomCreateDto dto = new ChatRoomCreateDto(r.name, r.maxUser);
             roomDtos.add(dto);
         }
         return roomDtos;
     }
 
-    public ChatRoom(String name) {
+    public ChatRoom(String name, int maxUser) {
         this.name = name;
+        this.maxUser = maxUser;
     }
     public ChatRoomResponseDto toResponseDto(){
-        return new ChatRoomResponseDto(roomId, name);
+        return new ChatRoomResponseDto(roomId, name, maxUser);
     }
 }

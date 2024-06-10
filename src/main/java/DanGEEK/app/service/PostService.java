@@ -2,54 +2,69 @@ package DanGEEK.app.service;
 
 import DanGEEK.app.Exception.ErrorCode;
 import DanGEEK.app.Exception.RestApiException;
-import DanGEEK.app.domain.MemberIntroduction;
+import DanGEEK.app.domain.ChatRoom;
+import DanGEEK.app.domain.ChatRoomMember;
+import DanGEEK.app.domain.Member.Member;
+import DanGEEK.app.domain.Member.MemberIntroduction;
 import DanGEEK.app.domain.Post;
 import DanGEEK.app.domain.PostType;
 import DanGEEK.app.dto.post.*;
-import DanGEEK.app.repository.MemberIntroductionRepository;
-import DanGEEK.app.repository.MemberRepository;
-import DanGEEK.app.repository.PostRepository;
+import DanGEEK.app.repository.*;
 import DanGEEK.app.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-    private final MemberIntroductionRepository memberIntroductionRepository;
+    private final ChatRoomService chatRoomService;
+    private final MemberService memberService;
+    private final ChatRoomMemberService chatRoomMemberService;
 
-    public PostResponseDto save(PostCreateRequestDto postDto){
-        Post post = new Post(postDto.getTitle(),postDto.getContents(), PostType.getPostType(postDto.getPost_type()), memberRepository.findById(SecurityUtil.getCurrentMemberId()).get());
-        postRepository.save(post);
-        return post.toResponseDto();
+    public Post createInvitePost(PostCreateRequestDto postDto){
+        ChatRoom chatRoom = chatRoomService.createChatRoom(memberService.getMe().getNickname(), postDto.getMaxUser());
+        Post post = new Post(postDto.getTitle(),postDto.getContents(), PostType.getPostType(postDto.getPost_type()), memberRepository.findById(SecurityUtil.getCurrentMemberId()).get(), chatRoom);
+        post = postRepository.save(post);
+        ChatRoomMember chatRoomMember = chatRoomMemberService.createChatRoomMember(chatRoom.getRoomId(), SecurityUtil.getCurrentMemberId());
+        return post;
     }
-    public PostResponseDto update(PostCreateRequestDto postDto){
+    public Post createGroupBuyPost(PostCreateRequestDto postDto){
+        Post post = new Post(postDto.getTitle(),postDto.getContents(), PostType.GROUP_BUY, memberService.getMe(), postDto.getLink(),postDto.getMallName(),postDto.getItem(),postDto.getPrice());
+        post = postRepository.save(post);
+        return post;
+    }
+    public Post createComplainPost(PostCreateRequestDto postDto){
+        Post post = new Post(postDto.getTitle(),postDto.getContents(), PostType.COMPLAIN, memberService.getMe(), postDto.getRoomNumber());
+        post = postRepository.save(post);
+        return post;
+    }
+
+    public Post update(PostCreateRequestDto postDto){
         Post post = postRepository.findById(postDto.getPostId())
                 .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
         post.setTitle(postDto.getTitle());
         post.setContents(postDto.getContents());
         postRepository.save(post);
-        return post.toResponseDto();
+        return post;
     }
-    public PostResponseDto delete(Long post_id){
+    public Post delete(Long post_id){
         Post post = postRepository.findById(post_id)
                 .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
-        PostResponseDto postDto = post.toResponseDto();
         postRepository.delete(post);
-        return postDto;
+        return post;
     }
     public PostResponseDto getPost(Long id){
         Post post = postRepository.findById(id).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
         PostResponseDto postResponseDto = post.toResponseDto();
         if(post.getType().equals(PostType.INVITE)){
             MateInviteResponseDto mateInviteResponseDto = (MateInviteResponseDto) postResponseDto;
-            MemberIntroduction memberIntroduction = memberIntroductionRepository.findByMember(memberRepository.findById(SecurityUtil.getCurrentMemberId()).get())
-                    .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
+            Member member = memberService.findMemberById(post.getMember().getId());
+            MemberIntroduction memberIntroduction = member.getIntroduction();
             mateInviteResponseDto.setMemberIntroductionCreateDto(memberIntroduction.toIntroductionDto());
         }
         else if(post.getType().equals(PostType.GROUP_BUY)){
@@ -58,19 +73,14 @@ public class PostService {
         }
         else if(post.getType().equals(PostType.COMPLAIN)){
             ComplainResponseDto complaintResponseDto = (ComplainResponseDto) postResponseDto;
-            complaintResponseDto.setRoomNumber(post.getRoomNumber());
+            complaintResponseDto.setRoomNumber(post.getDormRoomNumber());
         }
         else{
             throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);
         }
         return postResponseDto;
     }
-    public List<PostResponseDto> getPosts(PostType postType){
-        List<Post> postList = postRepository.findByType(postType);
-        List<PostResponseDto> result = new LinkedList<>();
-        for(Post post : postList){
-            result.add(post.toResponseDto());
-        }
-        return result;
+    public List<Post> getPosts(PostType postType){
+        return postRepository.findByType(postType);
     }
 }

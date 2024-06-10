@@ -1,11 +1,11 @@
 package DanGEEK.app.dto.post;
 
-import DanGEEK.app.domain.PostType;
+import DanGEEK.app.dto.chat.ChatRoomResponseDto;
 import lombok.Getter;
 
 @Getter
 public class GroupBuyResponseDto extends PostResponseDto{
-    public GroupBuyResponseDto(Long post_id, String title, String contents, String nickname, String post_type) {
+    public GroupBuyResponseDto(Long post_id, String title, String contents, String nickname, String post_type, String link, String mallName, String item, String price ,ChatRoomResponseDto chatRoomResponseDto) {
         super(post_id, title, contents, nickname, post_type);
     }
     private String link;

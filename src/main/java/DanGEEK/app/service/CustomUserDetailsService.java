@@ -1,7 +1,7 @@
 package DanGEEK.app.service;
 
 
-import DanGEEK.app.domain.Member;
+import DanGEEK.app.domain.Member.Member;
 import DanGEEK.app.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

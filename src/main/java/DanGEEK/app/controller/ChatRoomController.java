@@ -33,7 +33,7 @@ public class ChatRoomController {
     @PostMapping("/create")
     @ResponseBody
     public ChatRoomResponseDto createRoom(@RequestBody ChatRoomCreateDto chatRoomCreateDto) {
-        return chatRoomService.createChatRoom(chatRoomCreateDto);
+        return chatRoomService.createChatRoom(chatRoomCreateDto.getName(), chatRoomCreateDto.getMaxUser()).toResponseDto();
     }
 
     // 특정 채팅방 정보 보기

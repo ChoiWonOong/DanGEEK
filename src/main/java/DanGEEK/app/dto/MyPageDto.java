@@ -10,4 +10,5 @@ public class MyPageDto {
     String nickname;
     Boolean introductionWritten;
     Boolean putOnRecommend;
+    String imageUrl;
 }

@@ -1,11 +1,14 @@
 package DanGEEK.app.domain;
 
+import DanGEEK.app.domain.Member.Member;
 import DanGEEK.app.dto.chat.ChatRoomMemberCreateResponseDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @IdClass(ChatMemberId.class)
 public class ChatRoomMember {
     @ManyToOne

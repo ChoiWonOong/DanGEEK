@@ -7,4 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ChatRoomCreateDto {
     private String name;
+    private int maxUser;
 }

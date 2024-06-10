@@ -1,10 +1,9 @@
 package DanGEEK.app.controller;
 
-import DanGEEK.app.domain.Member;
+import DanGEEK.app.domain.Member.Member;
 import DanGEEK.app.dto.FCMRequestDto;
 import DanGEEK.app.dto.token.FCMTokenDto;
 import DanGEEK.app.service.FCMService;
-import DanGEEK.app.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

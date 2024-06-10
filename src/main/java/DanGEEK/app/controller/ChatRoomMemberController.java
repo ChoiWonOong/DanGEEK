@@ -15,7 +15,7 @@ public class ChatRoomMemberController {
     @PostMapping("/enter/{roomId}")
     public ChatRoomMemberCreateResponseDto createChatRoom(@PathVariable Long roomId, Long senderId) {
         // 채팅방 입장
-        return chatRoomMemberService.enterChatRoomMember(roomId, senderId);
+        return chatRoomMemberService.createChatRoomMember(roomId, senderId).toResponseDto();
     }
     @PostMapping("/exit/{roomId}")
     public void exitChatRoom(@PathVariable Long roomId, Long senderId) {

@@ -1,7 +1,7 @@
 package DanGEEK.app.repository;
 
 import DanGEEK.app.domain.FCMToken;
-import DanGEEK.app.domain.Member;
+import DanGEEK.app.domain.Member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FCMTokenRepository extends JpaRepository<FCMToken, Long> {

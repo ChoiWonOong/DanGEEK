@@ -23,8 +23,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Component
 public class S3Uploader {
-    @Autowired
-    private AmazonS3Client amazonS3Client;
+    private final AmazonS3Client amazonS3Client;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 

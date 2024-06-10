@@ -33,8 +33,9 @@ public class PostService {
         ChatRoomMember chatRoomMember = chatRoomMemberService.createChatRoomMember(chatRoom.getRoomId(), SecurityUtil.getCurrentMemberId());
         return post;
     }
-    public Post createGroupBuyPost(PostCreateRequestDto postDto){
+    public Post createGroupBuyPost(PostCreateRequestDto postDto, String url){
         Post post = new Post(postDto.getTitle(),postDto.getContents(), PostType.GROUP_BUY, memberService.getMe(), postDto.getLink(),postDto.getMallName(),postDto.getItem(),postDto.getPrice());
+        post.setImageUrl(url);
         post = postRepository.save(post);
         return post;
     }

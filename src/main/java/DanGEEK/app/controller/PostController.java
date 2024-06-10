@@ -5,10 +5,12 @@ import DanGEEK.app.domain.PostType;
 import DanGEEK.app.dto.post.PostCreateRequestDto;
 import DanGEEK.app.dto.post.PostResponseDto;
 import DanGEEK.app.service.PostService;
+import DanGEEK.app.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,6 +20,8 @@ import java.util.List;
 @Slf4j
 public class PostController {
     private final PostService postService;
+    private final S3Service s3Service;
+
     @PostMapping("/invite/create")
     public ResponseEntity<PostResponseDto> createInvitePost(@RequestBody PostCreateRequestDto postDto){
         postDto.setPost_type(PostType.INVITE.getType());
@@ -25,9 +29,11 @@ public class PostController {
         return ResponseEntity.ok(postService.createInvitePost(postDto).toResponseDto());
     }
     @PostMapping("/group_buy/create")
-    public ResponseEntity<PostResponseDto> createGroupBuyPost(@RequestBody PostCreateRequestDto postDto){
+    public ResponseEntity<PostResponseDto> createGroupBuyPost(@RequestPart(value = "file", required = false) MultipartFile file, @RequestPart PostCreateRequestDto postDto){
         postDto.setPost_type(PostType.GROUP_BUY.getType());
-        return ResponseEntity.ok(postService.createGroupBuyPost(postDto).toResponseDto());
+        String url = s3Service.upload(file);
+        Post post = postService.createGroupBuyPost(postDto, url);
+        return ResponseEntity.ok(post.toResponseDto());
     }
     @PostMapping("/complain/create")
     public ResponseEntity<PostResponseDto> createComplainPost(@RequestBody PostCreateRequestDto postDto){

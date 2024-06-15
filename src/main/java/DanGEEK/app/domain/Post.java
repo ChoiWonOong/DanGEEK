@@ -9,7 +9,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Entity
 @NoArgsConstructor
 @Getter
@@ -36,10 +38,12 @@ public class Post extends BaseEntity {
     private String item;
     private String price;
     //complain field
+    @Column(name = "dormitory_name")
+    private String dormitoryName;
     @Column(name = "dorm_room_number")
     private String dormRoomNumber;
     @Getter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -60,11 +64,12 @@ public class Post extends BaseEntity {
         this.member = member;
     }
 
-    public Post(String title, String contents, PostType type, Member member, String dormRoomNumber) {
+    public Post(String title, String contents, PostType type, Member member, String dormitoryName, String dormRoomNumber) {
         this.title = title;
         this.contents = contents;
         this.type = type;
         this.member = member;
+        this.dormitoryName = dormitoryName;
         this.dormRoomNumber = dormRoomNumber;
     }
     public Post(String title, String contents, PostType type, Member member, ChatRoom chatRoom) {
@@ -75,11 +80,15 @@ public class Post extends BaseEntity {
         this.chatRoom = chatRoom;
     }
     public PostResponseDto toResponseDto() {
+        PostResponseDto dto;
         if (type == PostType.GROUP_BUY) {
-            return new GroupBuyResponseDto(id, title, contents, member.getNickname(), type.getType(), link, mallName, item, price, chatRoom.toResponseDto());
+            dto = new GroupBuyResponseDto(id, title, contents, member.getNickname(), type.getType(), link, mallName, item, price, chatRoom.toResponseDto());
         } else if (type == PostType.INVITE) {
-            return new MateInviteResponseDto(id, title, contents, member.getNickname(), type.getType(), member.getIntroduction().toIntroductionDto(), chatRoom.toResponseDto());
-        } else
-            return new ComplainResponseDto(id, title, contents, member.getNickname(), type.getType());
+            dto = new MateInviteResponseDto(id, title, contents, member.getNickname(), type.getType(), member.getIntroduction().toIntroductionDto(), chatRoom.toResponseDto());
+        } else{
+            dto = new ComplainResponseDto(id, title, contents, member.getNickname(), type.getType());
+        }
+        log.info("title : {}",dto.getTitle());
+        return dto;
     }
 }

@@ -24,6 +24,8 @@ public class ChatRoom {
     private String name;
 
     @Getter
+    private int currentUsers = 0;
+    @Getter
     @Setter
     private int maxUser = 2;
     public static List<ChatRoomCreateDto> toDtoList(List<ChatRoom> chatRoomList){
@@ -40,6 +42,12 @@ public class ChatRoom {
         this.maxUser = maxUser;
     }
     public ChatRoomResponseDto toResponseDto(){
-        return new ChatRoomResponseDto(roomId, name, maxUser);
+        return new ChatRoomResponseDto(roomId, name, currentUsers, maxUser);
+    }
+    public void enterRoom(){
+        currentUsers++;
+    }
+    public void exitRoom(){
+        currentUsers--;
     }
 }

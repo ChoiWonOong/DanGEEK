@@ -1,8 +1,11 @@
 package DanGEEK.app.controller;
 
+import DanGEEK.app.Exception.ErrorResponse;
+import DanGEEK.app.Exception.RestApiException;
 import DanGEEK.app.dto.chat.ChatRoomMemberCreateResponseDto;
 import DanGEEK.app.service.ChatRoomMemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,13 +21,24 @@ public class ChatRoomMemberController {
         return chatRoomMemberService.createChatRoomMember(roomId, senderId).toResponseDto();
     }
     @PostMapping("/exit/{roomId}")
-    public void exitChatRoom(@PathVariable Long roomId, Long senderId) {
+    public ResponseEntity<?> exitChatRoom(@PathVariable Long roomId, Long senderId) {
         // 채팅방 퇴장
-        chatRoomMemberService.deleteChatRoomMember(roomId, senderId);
+        try{
+            chatRoomMemberService.deleteChatRoomMember(roomId, senderId);
+            return ResponseEntity.ok().build();
+        } catch (RestApiException e) {
+            e.printStackTrace();
+            return ErrorResponse.toResponseEntity(e.getErrorCode());
+        }
     }
     @GetMapping("/members/{roomId}")
-    public List<String> getChatRoomMembers(@PathVariable Long roomId) {
+    public ResponseEntity<?> getChatRoomMembers(@PathVariable Long roomId) {
         // 채팅방 참여자 목록 조회
-        return chatRoomMemberService.findAllMemberNameByRoomId(roomId);
+        try{
+            return ResponseEntity.ok(chatRoomMemberService.findAllMemberNameByRoomId(roomId));
+        } catch (RestApiException e) {
+            e.printStackTrace();
+            return ErrorResponse.toResponseEntity(e.getErrorCode());
+        }
     }
 }

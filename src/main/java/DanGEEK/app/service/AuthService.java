@@ -3,6 +3,8 @@ package DanGEEK.app.service;
 import DanGEEK.app.Exception.ErrorCode;
 import DanGEEK.app.Exception.RestApiException;
 import DanGEEK.app.domain.Member.Member;
+import DanGEEK.app.dto.auth.EmailCheckDto;
+import DanGEEK.app.dto.auth.NicknameCheckDto;
 import DanGEEK.app.dto.member.MemberCreateRequestDto;
 import DanGEEK.app.dto.member.MemberCreateResponseDto;
 import DanGEEK.app.dto.member.MemberPasswordReassignDto;
@@ -16,6 +18,7 @@ import DanGEEK.app.repository.MemberRepository;
 import DanGEEK.app.repository.RefreshTokenRepository;
 import com.univcert.api.UnivCert;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -29,6 +32,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AuthService {
@@ -49,11 +53,15 @@ public class AuthService {
         return UnivCert.certifyCode(key, univCertifyCodeRequestDto.getUsername(), "단국대학교", univCertifyCodeRequestDto.getCode());
     }
     public MemberCreateResponseDto memberSignup(MemberCreateRequestDto memberCreateRequestDto) {
-        if (memberRepository.existsByNickname(memberCreateRequestDto.getNickname())) {
-            throw new RestApiException(ErrorCode.ALREADY_EXIST_ERROR);
+        try{
+            if (memberRepository.existsByNickname(memberCreateRequestDto.getNickname())) {
+                throw new RestApiException(ErrorCode.ALREADY_EXIST_ERROR);
+            }
+            Member member = memberCreateRequestDto.toMember(passwordEncoder);
+            return Member.memberToResponseDto(memberRepository.save(member));
+        }catch(RestApiException e){
+            throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);
         }
-        Member member = memberCreateRequestDto.toMember(passwordEncoder);
-        return Member.memberToResponseDto(memberRepository.save(member));
     }
     public Map<String, Object> passwordReassignCertify(UnivCertifyRequestDto univCertifyRequestDto) throws IOException{
         if(memberRepository.findByUsername(univCertifyRequestDto.getUsername()).isPresent()){
@@ -64,14 +72,18 @@ public class AuthService {
     public Map<String, Object> passwordReassignCertifyCode(UnivCertifyCodeRequestDto univCertifyCodeRequestDto) throws IOException {
         return UnivCert.certifyCode(key, univCertifyCodeRequestDto.getUsername(), "단국대학교", univCertifyCodeRequestDto.getCode());
     }
-    @Transactional
     public TokenDto memberLogin(MemberCreateRequestDto memberCreateRequestDto) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
-        UsernamePasswordAuthenticationToken authenticationToken = memberCreateRequestDto.toAuthentication();
-        System.out.println(authenticationToken.toString());
-        TokenDto tokenDto = getToken(authenticationToken);
-        System.out.println(tokenDto.getAccessToken());
-        return tokenDto;
+        try{
+            UsernamePasswordAuthenticationToken authenticationToken = memberCreateRequestDto.toAuthentication();
+            log.info("AuthenticationToken : {}", authenticationToken.toString());
+            TokenDto tokenDto = getToken(authenticationToken);
+            System.out.println(tokenDto.getAccessToken());
+            return tokenDto;
+        }
+        catch(Exception e){
+            throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);
+        }
     }
     @Transactional
     public String logout(String accessToken, User user){
@@ -138,5 +150,14 @@ public class AuthService {
             return new MemberPasswordReassignDto(memberPasswordReassignDto.getUsername(), true);
         }
         return new MemberPasswordReassignDto(memberPasswordReassignDto.getUsername(), false);
+    }
+
+    public EmailCheckDto checkEmailRedundant(EmailCheckDto dto) {
+        dto.setExist(memberRepository.existsByUsername(dto.getEmail()));
+        return dto;
+    }
+    public NicknameCheckDto checkNicknameRedundant(NicknameCheckDto dto) {
+        dto.setExist(memberRepository.existsByNickname(dto.getNickname()));
+        return dto;
     }
 }

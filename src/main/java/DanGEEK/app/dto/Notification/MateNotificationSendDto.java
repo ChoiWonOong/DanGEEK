@@ -8,13 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MateNotificationSendDto extends NotificationSendDto{
-    private MemberIntroductionCreateDto memberIntroductionCreateDto;
+    private MemberIntroductionCreateDto memberIntroduction;
 
     public MateNotificationSendDto(Long post_id, String sender, String receiver, Boolean read_flag) {
         super(post_id, sender, receiver, read_flag);
-    }
-
-    public void setMemberIntroductionCreateDto(MemberIntroductionCreateDto memberIntroductionCreateDto) {
-        this.memberIntroductionCreateDto = memberIntroductionCreateDto;
     }
 }

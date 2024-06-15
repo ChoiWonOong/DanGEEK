@@ -13,7 +13,6 @@ public class PostCreateRequestDto {
     private Long userId;
     @Setter
     private String post_type;
-    private String imageUrl;
     //invite, group buy field
     private Long inviteNumber;
     //group buy field
@@ -22,6 +21,7 @@ public class PostCreateRequestDto {
     private String item;
     private String price;
     //complain field
+    private String dormitoryName;
     private String roomNumber;
     //post update field
     private Long postId;

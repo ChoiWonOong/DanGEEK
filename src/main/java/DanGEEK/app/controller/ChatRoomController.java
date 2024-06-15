@@ -1,11 +1,14 @@
 package DanGEEK.app.controller;
 
+import DanGEEK.app.Exception.ErrorResponse;
+import DanGEEK.app.Exception.RestApiException;
 import DanGEEK.app.domain.ChatRoom;
 import DanGEEK.app.dto.chat.ChatRoomCreateDto;
 import DanGEEK.app.dto.chat.ChatRoomResponseDto;
 import DanGEEK.app.service.ChatRoomService;
 import DanGEEK.app.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,27 +22,33 @@ public class ChatRoomController {
 
     // 모든 채팅방 목록 반환
     @GetMapping("/list")
-    @ResponseBody
     public List<ChatRoomResponseDto> findAllRooms() {
         return chatRoomService.findAllRooms();
     }
     @GetMapping("/my")
-    @ResponseBody
-    public List<ChatRoomResponseDto> findMyRooms() {
-        return chatRoomService.findChatroomByUserId(SecurityUtil.getCurrentMemberId());
+    public ResponseEntity<?> findMyRooms() {
+        try {
+            return ResponseEntity.ok(chatRoomService.findChatroomByUserId(SecurityUtil.getCurrentMemberId()));
+        } catch (RestApiException e) {
+            e.printStackTrace();
+            return ErrorResponse.toResponseEntity(e.getErrorCode());
+        }
     }
 
     // 채팅방 생성
     @PostMapping("/create")
-    @ResponseBody
     public ChatRoomResponseDto createRoom(@RequestBody ChatRoomCreateDto chatRoomCreateDto) {
         return chatRoomService.createChatRoom(chatRoomCreateDto.getName(), chatRoomCreateDto.getMaxUser()).toResponseDto();
     }
 
     // 특정 채팅방 정보 보기
     @GetMapping("/{roomId}")
-    @ResponseBody
-    public ChatRoom roomInfo(@PathVariable Long roomId) {
-        return chatRoomService.findRoomById(roomId);
+    public ResponseEntity<?> roomInfo(@PathVariable Long roomId) {
+        try{
+            return ResponseEntity.ok(chatRoomService.findRoomById(roomId));
+        } catch (RestApiException e) {
+            e.printStackTrace();
+            return ErrorResponse.toResponseEntity(e.getErrorCode());
+        }
     }
 }

@@ -28,9 +28,12 @@ public class PostService {
 
     public Post createInvitePost(PostCreateRequestDto postDto){
         ChatRoom chatRoom = chatRoomService.createChatRoom(memberService.getMe().getNickname(), postDto.getMaxUser());
-        Post post = new Post(postDto.getTitle(),postDto.getContents(), PostType.getPostType(postDto.getPost_type()), memberRepository.findById(SecurityUtil.getCurrentMemberId()).get(), chatRoom);
+        Post post = new Post(postDto.getTitle(),postDto.getContents(), PostType.getPostType(postDto.getPost_type()), memberService.getMe(), chatRoom);
         post = postRepository.save(post);
+        log.info("post : {} {}", post.getMember().getIntroduction().getContents(), chatRoom.getRoomId());
+        // enterRoom
         ChatRoomMember chatRoomMember = chatRoomMemberService.createChatRoomMember(chatRoom.getRoomId(), SecurityUtil.getCurrentMemberId());
+        log.info("chatRoomMember : {} {}", chatRoomMember.getMemberId(), chatRoomMember.getRoomId());
         return post;
     }
     public Post createGroupBuyPost(PostCreateRequestDto postDto, String url){
@@ -40,7 +43,7 @@ public class PostService {
         return post;
     }
     public Post createComplainPost(PostCreateRequestDto postDto){
-        Post post = new Post(postDto.getTitle(),postDto.getContents(), PostType.COMPLAIN, memberService.getMe(), postDto.getRoomNumber());
+        Post post = new Post(postDto.getTitle(),postDto.getContents(), PostType.COMPLAIN, memberService.getMe(), postDto.getDormitoryName(),postDto.getRoomNumber());
         post = postRepository.save(post);
         return post;
     }
@@ -66,7 +69,7 @@ public class PostService {
             MateInviteResponseDto mateInviteResponseDto = (MateInviteResponseDto) postResponseDto;
             Member member = memberService.findMemberById(post.getMember().getId());
             MemberIntroduction memberIntroduction = member.getIntroduction();
-            mateInviteResponseDto.setMemberIntroductionCreateDto(memberIntroduction.toIntroductionDto());
+            mateInviteResponseDto.setMemberIntroduction(memberIntroduction.toIntroductionDto());
         }
         else if(post.getType().equals(PostType.GROUP_BUY)){
             GroupBuyResponseDto groupBuyResponseDto = (GroupBuyResponseDto) postResponseDto;
@@ -83,5 +86,9 @@ public class PostService {
     }
     public List<Post> getPosts(PostType postType){
         return postRepository.findByType(postType);
+    }
+
+    public Post findById(Long postId) {
+        return postRepository.findById(postId).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
     }
 }

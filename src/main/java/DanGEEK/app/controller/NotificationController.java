@@ -1,5 +1,8 @@
 package DanGEEK.app.controller;
 
+import DanGEEK.app.Exception.ErrorResponse;
+import DanGEEK.app.Exception.RestApiException;
+import DanGEEK.app.dto.Notification.NotificationAnswerDto;
 import DanGEEK.app.dto.Notification.NotificationSendDto;
 import DanGEEK.app.service.NotificationService;
 import DanGEEK.app.util.SecurityUtil;
@@ -22,7 +25,7 @@ public class NotificationController {
         return notificationService.subscribe(SecurityUtil.getCurrentMemberId());
     }
 
-    @PostMapping("/send-data")
+    @PostMapping("/send")
    public ResponseEntity<NotificationSendDto> sendData(@RequestBody NotificationSendDto notificationSendDto) {
         return ResponseEntity.ok(notificationService.notify(notificationSendDto));
     }
@@ -33,5 +36,17 @@ public class NotificationController {
     @GetMapping("/{id}")
     public NotificationSendDto getNotification(@PathVariable Long id){
         return notificationService.getNotification(id);
+    }
+    @PostMapping("/answer")
+    public ResponseEntity<?> answerNotification(@RequestBody NotificationAnswerDto notificationAnswerDto){
+        try{
+            return ResponseEntity.ok(notificationService.answerNotification(notificationAnswerDto));
+        }catch (RestApiException e){
+            e.printStackTrace();
+            return ErrorResponse.toResponseEntity(e.getErrorCode());
+        }catch (RuntimeException e) {
+            e.printStackTrace();
+            return ErrorResponse.toResponseEntity(e);
+        }
     }
 }

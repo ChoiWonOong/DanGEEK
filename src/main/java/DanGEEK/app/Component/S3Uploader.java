@@ -1,11 +1,13 @@
 package DanGEEK.app.Component;
 
 
+import DanGEEK.app.config.S3Config;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +26,14 @@ import java.util.UUID;
 @Component
 public class S3Uploader {
     private final AmazonS3Client amazonS3Client;
+    private final S3Config s3Config;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     /**
      * 로컬 경로에 저장
      */
+    @Transactional
     public String uploadFileToS3(MultipartFile multipartFile, String filePath) {
         // MultipartFile -> File 로 변환
         File uploadFile = null;

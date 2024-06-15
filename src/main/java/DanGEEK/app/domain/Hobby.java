@@ -4,9 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum Hobby {
-    GAME("game"), SPORTS("sports"), READ("read"), ART("art"), MOVIE("movie"), COLLECT("collect"), CRAFT("craft"), OBSERVE("observe"), TRAVEL("travel"), MUSIC("music"), COOK("cook"), PHOTO("photo");
+    GAME(0,"game"), SPORTS(1, "sports"), READ(2,"read"), ART(3,"art"), MOVIE(4,"movie"), COLLECT(5,"collect"), CRAFT(6,"craft"), OBSERVE(7,"observe"), TRAVEL(8,"travel"), MUSIC(9,"music"), COOK(10,"cook"), PHOTO(11,"photo");
+    private final int index;
     private final String name;
-    Hobby(String name){
+    Hobby(int index, String name){
+        this.index = index;
         this.name = name;
     }
     public static Hobby findHobby(String name){

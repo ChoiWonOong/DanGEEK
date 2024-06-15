@@ -11,10 +11,7 @@ import DanGEEK.app.dto.member.MemberCreateResponseDto;
 import DanGEEK.app.dto.member.MemberIntroductionCreateDto;
 import DanGEEK.app.dto.MyPageDto;
 import DanGEEK.app.dto.member.SurveyRequestDto;
-import DanGEEK.app.repository.MemberAnalyzeInfoRepository;
-import DanGEEK.app.repository.MemberHobbyRepository;
-import DanGEEK.app.repository.MemberIntroductionRepository;
-import DanGEEK.app.repository.MemberRepository;
+import DanGEEK.app.repository.*;
 import DanGEEK.app.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +31,8 @@ public class MemberService {
     private final MemberAnalyzeInfoRepository memberAnalyzeInfoRepository;
     private final MemberHobbyRepository memberHobbyRepository;
     private final S3Service s3Service;
+    private final MemberAnalyzeRepository memberAnalyzeRepository;
+
     public MemberIntroduction introductionDtoToEntity(MemberIntroductionCreateDto memberIntroductionCreateDto) {
         Member member = getMe();
         List<Hobby> hobbies = memberIntroductionCreateDto.getHobbies().stream().map(Hobby::findHobby).toList();
@@ -108,5 +107,17 @@ public class MemberService {
         MemberAnalyzeInfo memberAnalyzeInfo = new MemberAnalyzeInfo(member, surveyDto);
         memberAnalyzeInfoRepository.save(memberAnalyzeInfo);
         return surveyDto;
+    }
+
+    public MemberAnalyzeInfo writeAnalyzeInfo(SurveyRequestDto surveyRequestDto) {
+        Member member = getMe();
+        MemberAnalyzeInfo memberAnalyzeInfo = surveyRequestDto.toEntity(member, surveyRequestDto);
+        return memberAnalyzeRepository.save(memberAnalyzeInfo);
+    }
+    public MemberAnalyzeInfo getAnalyzeInfo(Long id) {
+        return memberAnalyzeRepository.findById(id).orElseThrow(()-> new RestApiException(ErrorCode.NOT_EXIST_ERROR));
+    }
+    public Member findMemberByNickname(String nickname){
+        return memberRepository.findByNickname(nickname).orElseThrow(()-> new RestApiException(ErrorCode.NOT_EXIST_ERROR));
     }
 }

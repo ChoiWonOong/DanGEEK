@@ -8,6 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public abstract class PostResponseDto {
     private Long post_id;
+    private Long memberId;
     private String title;
     private String contents;
     private String nickname;

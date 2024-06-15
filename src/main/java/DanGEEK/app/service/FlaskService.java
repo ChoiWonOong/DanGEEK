@@ -1,12 +1,14 @@
 package DanGEEK.app.service;
 
 import DanGEEK.app.dto.FlaskDto;
+import DanGEEK.app.dto.member.SurveyRequestDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -37,5 +39,9 @@ public class FlaskService {
 
         //Flask 서버로 데이터를 전송하고 받은 응답 값을 return
         return restTemplate.postForObject(url, entity, String.class);
+    }
+
+    public ResponseEntity<?> sendInfo(SurveyRequestDto surveyRequestDto) {
+        return null;
     }
 }

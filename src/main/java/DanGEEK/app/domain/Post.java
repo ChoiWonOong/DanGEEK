@@ -1,10 +1,7 @@
 package DanGEEK.app.domain;
 
 import DanGEEK.app.domain.Member.Member;
-import DanGEEK.app.dto.post.ComplainResponseDto;
-import DanGEEK.app.dto.post.GroupBuyResponseDto;
-import DanGEEK.app.dto.post.MateInviteResponseDto;
-import DanGEEK.app.dto.post.PostResponseDto;
+import DanGEEK.app.dto.post.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,24 +50,25 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
 
-    public Post(String title, String contents, PostType type, Member member, String link, String mallName, String item, String price) {
-        this.title = title;
-        this.contents = contents;
-        this.type = type;
-        this.link = link;
-        this.mallName = mallName;
-        this.item = item;
-        this.price = price;
+    public Post(PostCreateRequestDto dto, Member member, ChatRoom chatRoom) {
+        this.title = dto.getTitle();
+        this.contents = dto.getContents();
+        this.type = PostType.getPostType(dto.getPost_type());
+        this.link = dto.getLink();
+        this.mallName = dto.getMallName();
+        this.item = dto.getItem();
+        this.price = dto.getPrice();
         this.member = member;
+        this.chatRoom = chatRoom;
     }
 
-    public Post(String title, String contents, PostType type, Member member, String dormitoryName, String dormRoomNumber) {
-        this.title = title;
-        this.contents = contents;
-        this.type = type;
+    public Post(PostCreateRequestDto dto, Member member) {
+        this.title = dto.getTitle();
+        this.contents = dto.getContents();
+        this.type = PostType.getPostType(dto.getPost_type());
         this.member = member;
-        this.dormitoryName = dormitoryName;
-        this.dormRoomNumber = dormRoomNumber;
+        this.dormitoryName = dto.getDormitoryName();
+        this.dormRoomNumber = dto.getRoomNumber();
     }
     public Post(String title, String contents, PostType type, Member member, ChatRoom chatRoom) {
         this.title = title;
@@ -86,9 +84,9 @@ public class Post extends BaseEntity {
         } else if (type == PostType.INVITE) {
             dto = new MateInviteResponseDto(id, title, contents, member.getNickname(), type.getType(), member.getIntroduction().toIntroductionDto(), chatRoom.toResponseDto());
         } else{
-            dto = new ComplainResponseDto(id, title, contents, member.getNickname(), type.getType());
+            dto = new ComplainResponseDto(id, title, contents, member.getNickname(), type.getType(), dormitoryName, dormRoomNumber);
         }
-        log.info("title : {}",dto.getTitle());
+        log.info("dto : {}", dto);
         return dto;
     }
 }

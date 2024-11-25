@@ -4,14 +4,11 @@ import DanGEEK.app.Exception.ErrorResponse;
 import DanGEEK.app.Exception.RestApiException;
 import DanGEEK.app.domain.Post;
 import DanGEEK.app.domain.PostType;
-import DanGEEK.app.dto.post.MateInviteResponseDto;
-import DanGEEK.app.dto.post.PostCreateRequestDto;
-import DanGEEK.app.dto.post.PostResponseDto;
+import DanGEEK.app.dto.post.*;
 import DanGEEK.app.service.PostService;
 import DanGEEK.app.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,9 +35,10 @@ public class PostController {
             postDto.setPost_type(PostType.GROUP_BUY.getType());
             String url = s3Service.upload(file);
             Post post = postService.createGroupBuyPost(postDto, url);
-            return ResponseEntity.ok(post.toResponseDto());
+            return ResponseEntity.ok((GroupBuyResponseDto)post.toResponseDto());
         }
         catch (RuntimeException e){
+            e.printStackTrace();
             return ErrorResponse.toResponseEntity(e);
         }
     }
@@ -48,7 +46,7 @@ public class PostController {
     public ResponseEntity<?> createComplainPost(@RequestBody PostCreateRequestDto postDto){
         try{
             postDto.setPost_type(PostType.COMPLAIN.getType());
-            return ResponseEntity.ok(postService.createComplainPost(postDto).toResponseDto());
+            return ResponseEntity.ok((ComplainResponseDto)postService.createComplainPost(postDto).toResponseDto());
         }
         catch (RuntimeException e){
             return ErrorResponse.toResponseEntity(e);

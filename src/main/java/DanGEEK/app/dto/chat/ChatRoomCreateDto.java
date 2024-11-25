@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChatRoomCreateDto {
     private String name;
-    private int maxUser;
+    private int maxUser = 2;
 }

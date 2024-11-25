@@ -9,7 +9,8 @@ import DanGEEK.app.domain.Member.MemberIntroduction;
 import DanGEEK.app.domain.Post;
 import DanGEEK.app.domain.PostType;
 import DanGEEK.app.dto.post.*;
-import DanGEEK.app.repository.*;
+import DanGEEK.app.repository.MemberRepository;
+import DanGEEK.app.repository.PostRepository;
 import DanGEEK.app.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,10 @@ public class PostService {
     private final MemberService memberService;
     private final ChatRoomMemberService chatRoomMemberService;
 
-    public Post createInvitePost(PostCreateRequestDto postDto){
+    public Post createInvitePost(PostCreateRequestDto postDto) {
         ChatRoom chatRoom = chatRoomService.createChatRoom(memberService.getMe().getNickname(), postDto.getMaxUser());
-        Post post = new Post(postDto.getTitle(),postDto.getContents(), PostType.getPostType(postDto.getPost_type()), memberService.getMe(), chatRoom);
+        log.info("chatRoom : {} {}", chatRoom.getRoomId(), chatRoom.getMaxUser());
+        Post post = new Post(postDto.getTitle(), postDto.getContents(), PostType.getPostType(postDto.getPost_type()), memberService.getMe(), chatRoom);
         post = postRepository.save(post);
         log.info("post : {} {}", post.getMember().getIntroduction().getContents(), chatRoom.getRoomId());
         // enterRoom
@@ -36,14 +38,20 @@ public class PostService {
         log.info("chatRoomMember : {} {}", chatRoomMember.getMemberId(), chatRoomMember.getRoomId());
         return post;
     }
-    public Post createGroupBuyPost(PostCreateRequestDto postDto, String url){
-        Post post = new Post(postDto.getTitle(),postDto.getContents(), PostType.GROUP_BUY, memberService.getMe(), postDto.getLink(),postDto.getMallName(),postDto.getItem(),postDto.getPrice());
+    public Post createGroupBuyPost(PostCreateRequestDto postDto, String url) {
+        ChatRoom chatRoom = chatRoomService.createChatRoom(postDto.getTitle(), postDto.getMaxUser());
+        log.info("chatRoom : {} {}", chatRoom.getRoomId(), chatRoom.getMaxUser());
+        Post post = new Post(postDto, memberService.getMe(), chatRoom);
         post.setImageUrl(url);
         post = postRepository.save(post);
+        // enterRoom
+        ChatRoomMember chatRoomMember = chatRoomMemberService.createChatRoomMember(chatRoom.getRoomId(), SecurityUtil.getCurrentMemberId());
+        log.info("chatRoomMember : {} {}", chatRoomMember.getMemberId(), chatRoomMember.getRoomId());
         return post;
     }
     public Post createComplainPost(PostCreateRequestDto postDto){
-        Post post = new Post(postDto.getTitle(),postDto.getContents(), PostType.COMPLAIN, memberService.getMe(), postDto.getDormitoryName(),postDto.getRoomNumber());
+        log.info("postDto : {}", postDto.getDormitoryName(), postDto.getRoomNumber());
+        Post post = new Post(postDto, memberService.getMe());
         post = postRepository.save(post);
         return post;
     }
@@ -77,7 +85,6 @@ public class PostService {
         }
         else if(post.getType().equals(PostType.COMPLAIN)){
             ComplainResponseDto complaintResponseDto = (ComplainResponseDto) postResponseDto;
-            complaintResponseDto.setRoomNumber(post.getDormRoomNumber());
         }
         else{
             throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);

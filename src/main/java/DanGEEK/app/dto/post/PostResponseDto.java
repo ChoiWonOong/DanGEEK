@@ -1,6 +1,6 @@
 package DanGEEK.app.dto.post;
 
-import DanGEEK.app.domain.PostType;
+import DanGEEK.app.dto.chat.ChatRoomResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,4 +13,5 @@ public abstract class PostResponseDto {
     private String contents;
     private String nickname;
     private String post_type;
+    private ChatRoomResponseDto chatRoomResponseDto;
 }

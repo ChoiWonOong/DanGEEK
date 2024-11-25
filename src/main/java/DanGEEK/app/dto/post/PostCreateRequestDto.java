@@ -25,7 +25,7 @@ public class PostCreateRequestDto {
     private String roomNumber;
     //post update field
     private Long postId;
-    private int maxUser;
+    private int maxUser = 2;
 
     public PostCreateRequestDto(String title, String content, Long userId) {
         this.title = title;

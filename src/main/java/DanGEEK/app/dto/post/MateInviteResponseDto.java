@@ -12,8 +12,7 @@ public class MateInviteResponseDto extends PostResponseDto{
     private MemberIntroductionCreateDto memberIntroduction;
     private ChatRoomResponseDto chatRoomResponse;
     public MateInviteResponseDto(Long post_id, String title, String contents, String nickname, String post_type, MemberIntroductionCreateDto memberIntroductionCreateDto, ChatRoomResponseDto chatRoomResponseDto) {
-        super(post_id, SecurityUtil.getCurrentMemberId(),title, contents, nickname, post_type);
+        super(post_id, SecurityUtil.getCurrentMemberId(),title, contents, nickname, post_type, chatRoomResponseDto);
         this.memberIntroduction = memberIntroductionCreateDto;
-        this.chatRoomResponse = chatRoomResponseDto;
     }
 }

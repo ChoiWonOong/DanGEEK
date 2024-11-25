@@ -4,10 +4,9 @@ import DanGEEK.app.Exception.ErrorCode;
 import DanGEEK.app.Exception.RestApiException;
 import DanGEEK.app.domain.Hobby;
 import DanGEEK.app.domain.Member.*;
-import DanGEEK.app.dto.member.MemberAnalyzeInfoDto;
-import DanGEEK.app.dto.member.MemberCreateResponseDto;
-import DanGEEK.app.dto.member.MemberIntroductionCreateDto;
 import DanGEEK.app.dto.MyPageDto;
+import DanGEEK.app.dto.member.MemberAnalyzeInfoDto;
+import DanGEEK.app.dto.member.MemberIntroductionCreateDto;
 import DanGEEK.app.dto.member.SurveyRequestDto;
 import DanGEEK.app.repository.*;
 import DanGEEK.app.util.SecurityUtil;
@@ -19,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -57,11 +57,12 @@ public class MemberService {
             log.info("memberIntroduction contents : {}",memberIntroduction.getContents());
             member.writeIntroduction(memberIntroduction);
             memberIntroductionRepository.save(memberIntroduction);
-            calculateSimilarity();
+            //calculateSimilarity();
             return member.getIntroduction().toIntroductionDto();
-        }catch (RuntimeException e){
-            e.printStackTrace();
-            throw new RestApiException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }catch (RestApiException e){
+            StackTraceElement stackTrace = e.getStackTrace()[0];
+            log.error(e.getMessage(), stackTrace);
+            throw new RestApiException(ErrorCode.NOT_EXIST_ERROR, stackTrace);
         }
     }
     @Transactional
@@ -79,7 +80,11 @@ public class MemberService {
         }catch (RestApiException e){
             e.printStackTrace();
             throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);
-        }
+        }/*
+        catch (RuntimeException e){
+            e.printStackTrace();
+            throw new RuntimeException();
+        }*/
 
     }
     public MyPageDto getMyPage(){
@@ -129,8 +134,15 @@ public class MemberService {
 
     public SurveyRequestDto writeSurvey(SurveyRequestDto surveyDto) {
         Member member = getMe();
-        MemberAnalyzeInfo memberAnalyzeInfo = new MemberAnalyzeInfo(member, surveyDto);
-        memberAnalyzeInfoRepository.save(memberAnalyzeInfo);
+        Optional<MemberAnalyzeInfo> optionalMemberAnalyzeInfo = memberAnalyzeInfoRepository.findByMember(member);
+        if(optionalMemberAnalyzeInfo.isPresent()){
+            MemberAnalyzeInfo memberAnalyzeInfo = optionalMemberAnalyzeInfo.get();
+            memberAnalyzeInfo = memberAnalyzeInfo.update(surveyDto);
+            memberAnalyzeInfoRepository.save(memberAnalyzeInfo);
+        }else{
+            MemberAnalyzeInfo memberAnalyzeInfo = new MemberAnalyzeInfo(member, surveyDto);
+            memberAnalyzeInfoRepository.save(memberAnalyzeInfo);
+        }
         return surveyDto;
     }
 

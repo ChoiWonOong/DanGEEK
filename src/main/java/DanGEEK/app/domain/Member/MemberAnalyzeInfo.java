@@ -6,7 +6,6 @@ import DanGEEK.app.util.StringListConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +39,13 @@ public class MemberAnalyzeInfo {
         this.wakeTime = dto.getWakeTime();
         this.sleepTime = dto.getSleepTime();
         this.hobbies = dto.getHobbies();
+    }
+    public MemberAnalyzeInfo update(SurveyRequestDto dto){
+        this.cleanliness = dto.getCleanliness();
+        this.wakeTime = dto.getWakeTime();
+        this.sleepTime = dto.getSleepTime();
+        this.hobbies = dto.getHobbies();
+        return this;
     }
     public MemberAnalyzeInfoDto toDto(){
         return new MemberAnalyzeInfoDto(this);

@@ -16,6 +16,7 @@ import DanGEEK.app.jwt.RefreshToken;
 import DanGEEK.app.jwt.TokenProvider;
 import DanGEEK.app.repository.MemberRepository;
 import DanGEEK.app.repository.RefreshTokenRepository;
+
 import com.univcert.api.UnivCert;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,7 @@ public class AuthService {
         if (memberRepository.existsByUsername(univCertifyRequestDto.getUsername())) {
             throw new RestApiException(ErrorCode.ALREADY_EXIST_ERROR);
         }
+        log.info("univCertifyRequestDto : {}", univCertifyRequestDto.getUsername());
         return UnivCert.certify(key, univCertifyRequestDto.getUsername(), "단국대학교", true);
     }
     public Map<String, Object> univCertifyCode(UnivCertifyCodeRequestDto univCertifyCodeRequestDto) throws IOException {
@@ -54,13 +56,15 @@ public class AuthService {
     }
     public MemberCreateResponseDto memberSignup(MemberCreateRequestDto memberCreateRequestDto) {
         try{
-            if (memberRepository.existsByNickname(memberCreateRequestDto.getNickname())) {
+            if (memberRepository.existsByNickname(memberCreateRequestDto.getNickname())
+                    ||
+            memberRepository.existsByUsername(memberCreateRequestDto.getUsername())) {
                 throw new RestApiException(ErrorCode.ALREADY_EXIST_ERROR);
             }
             Member member = memberCreateRequestDto.toMember(passwordEncoder);
             return Member.memberToResponseDto(memberRepository.save(member));
         }catch(RestApiException e){
-            throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);
+            throw new RestApiException(ErrorCode.ALREADY_EXIST_ERROR);
         }
     }
     public Map<String, Object> passwordReassignCertify(UnivCertifyRequestDto univCertifyRequestDto) throws IOException{
@@ -141,15 +145,19 @@ public class AuthService {
         return tokenDto;
     }
 
-    public MemberPasswordReassignDto passwordReassign(MemberPasswordReassignDto memberPasswordReassignDto){
-        Optional<Member> optionalMember = memberRepository.findByUsername(memberPasswordReassignDto.getUsername());
-        if(optionalMember.isPresent()){
-            Member member = optionalMember.get();
-            member.passwordReassign(passwordEncoder.encode(memberPasswordReassignDto.getPassword()));
-            memberRepository.save(member);
-            return new MemberPasswordReassignDto(memberPasswordReassignDto.getUsername(), true);
+    public MemberPasswordReassignDto passwordReassign(MemberPasswordReassignDto memberPasswordReassignDto) {
+        try {
+            Optional<Member> optionalMember = memberRepository.findByUsername(memberPasswordReassignDto.getUsername());
+            if (optionalMember.isPresent()) {
+                Member member = optionalMember.get();
+                member.passwordReassign(passwordEncoder.encode(memberPasswordReassignDto.getPassword()));
+                memberRepository.save(member);
+                return new MemberPasswordReassignDto(memberPasswordReassignDto.getUsername(), true);
+            }
+            throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);
+        } catch (RestApiException e) {
+            throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);
         }
-        return new MemberPasswordReassignDto(memberPasswordReassignDto.getUsername(), false);
     }
 
     public EmailCheckDto checkEmailRedundant(EmailCheckDto dto) {

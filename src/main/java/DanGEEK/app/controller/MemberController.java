@@ -2,23 +2,17 @@ package DanGEEK.app.controller;
 
 import DanGEEK.app.Exception.ErrorResponse;
 import DanGEEK.app.Exception.RestApiException;
-import DanGEEK.app.domain.Member.Member;
-import DanGEEK.app.domain.Member.MemberAnalyzeInfo;
-import DanGEEK.app.dto.member.MemberCreateResponseDto;
-import DanGEEK.app.dto.member.MemberIntroductionCreateDto;
 import DanGEEK.app.dto.MyPageDto;
+import DanGEEK.app.dto.member.MemberIntroductionCreateDto;
 import DanGEEK.app.dto.member.SurveyRequestDto;
 import DanGEEK.app.service.MemberService;
 import DanGEEK.app.util.SecurityUtil;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -26,16 +20,6 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
 
-/*    @PostMapping("/signup")
-    public ResponseEntity<?> writeAnalyzeInfo(@RequestBody MemberCreateResponseDto memberCreateResponseDto){
-        try{
-            return ResponseEntity.ok(memberService.writeAnalyzeInfo(memberCreateResponseDto));
-        }
-        catch (RestApiException e){
-            e.printStackTrace();
-            return ErrorResponse.toResponseEntity(e.getErrorCode());
-        }
-    }*/
     @PostMapping("/write/introduction")
     public ResponseEntity<MemberIntroductionCreateDto> writeIntroduction(@RequestBody MemberIntroductionCreateDto memberIntroductionCreateDto){
         return ResponseEntity.ok(memberService.writeIntroduction(memberIntroductionCreateDto));
@@ -111,7 +95,7 @@ public class MemberController {
             return ErrorResponse.toResponseEntity(e);
         }
     }
-    @GetMapping("/get/analyzingInfo")
+    @GetMapping("/analyzeInfo")
     public ResponseEntity<?> getAnalyzingInfo(){
         try{
             return ResponseEntity.ok(memberService.getAnalyzeInfo(SecurityUtil.getCurrentMemberId()));

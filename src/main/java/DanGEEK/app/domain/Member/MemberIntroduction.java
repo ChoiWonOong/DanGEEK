@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,10 +34,10 @@ public class MemberIntroduction extends BaseEntity {
     private String contents;
     @Column(name="personality", nullable = false)
     @Convert(converter = StringListConverter.class)
-    private List<String> personality;
+    private List<String> personality = new ArrayList<>();
     @OneToMany
     @JoinColumn(name="hobbies")
-    private List<MemberHobby> hobbies;
+    private List<MemberHobby> hobbies = new ArrayList<>();
     @Builder
     public MemberIntroduction(String name, String major, String grade, String sex, String contents, List<String> personality, List<MemberHobby> hobbyList, Member member){
         this.name = name;

@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class FlaskDto {
     String message;
-    int result = 0; //default : pass
+    int result = 1; //default : pass
 }

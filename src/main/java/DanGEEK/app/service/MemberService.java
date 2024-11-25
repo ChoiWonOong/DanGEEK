@@ -3,10 +3,8 @@ package DanGEEK.app.service;
 import DanGEEK.app.Exception.ErrorCode;
 import DanGEEK.app.Exception.RestApiException;
 import DanGEEK.app.domain.Hobby;
-import DanGEEK.app.domain.Member.Member;
-import DanGEEK.app.domain.Member.MemberAnalyzeInfo;
-import DanGEEK.app.domain.Member.MemberHobby;
-import DanGEEK.app.domain.Member.MemberIntroduction;
+import DanGEEK.app.domain.Member.*;
+import DanGEEK.app.dto.member.MemberAnalyzeInfoDto;
 import DanGEEK.app.dto.member.MemberCreateResponseDto;
 import DanGEEK.app.dto.member.MemberIntroductionCreateDto;
 import DanGEEK.app.dto.MyPageDto;
@@ -32,11 +30,11 @@ public class MemberService {
     private final MemberHobbyRepository memberHobbyRepository;
     private final S3Service s3Service;
     private final MemberAnalyzeRepository memberAnalyzeRepository;
+    private final SimilarityRepository similarityRepository;
 
     public MemberIntroduction introductionDtoToEntity(MemberIntroductionCreateDto memberIntroductionCreateDto) {
         Member member = getMe();
         List<Hobby> hobbies = memberIntroductionCreateDto.getHobbies().stream().map(Hobby::findHobby).toList();
-        log.info("hobbies : {}", hobbies.stream().map(Hobby::toString).toList());
         hobbies.forEach(hobby -> {
             MemberHobby memberHobby = new MemberHobby(member, hobby);
             memberHobbyRepository.save(memberHobby);
@@ -52,14 +50,37 @@ public class MemberService {
         memberRepository.save(member);
         return member.MemberToMyPageDto();
     }
-    @Transactional
     public MemberIntroductionCreateDto writeIntroduction(MemberIntroductionCreateDto memberIntroductionCreateDto){
-        Member member = getMe();
-        MemberIntroduction memberIntroduction = introductionDtoToEntity(memberIntroductionCreateDto);
-        log.info("memberIntroduction contents : {}",memberIntroduction.getContents());
-        member.writeIntroduction(memberIntroduction);
-        memberIntroductionRepository.save(memberIntroduction);
-        return member.getIntroduction().toIntroductionDto();
+        try{
+            Member member = getMe();
+            MemberIntroduction memberIntroduction = introductionDtoToEntity(memberIntroductionCreateDto);
+            log.info("memberIntroduction contents : {}",memberIntroduction.getContents());
+            member.writeIntroduction(memberIntroduction);
+            memberIntroductionRepository.save(memberIntroduction);
+            calculateSimilarity();
+            return member.getIntroduction().toIntroductionDto();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            throw new RestApiException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @Transactional
+    void calculateSimilarity(){
+        Member me = getMe();
+        MemberAnalyzeInfo myInfo = me.getMemberAnalyzeInfo();
+        List<MemberAnalyzeInfo> analyzeInfos = memberAnalyzeInfoRepository.findAll();
+        try {
+            if(analyzeInfos.isEmpty()) throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);
+            for (MemberAnalyzeInfo analyzeInfo : analyzeInfos) {
+                Member other = analyzeInfo.getMember();
+                double similarity = analyzeInfo.getCosineSimilarity(myInfo);
+                similarityRepository.save(new Similarity(me, other, similarity));
+            }
+        }catch (RestApiException e){
+            e.printStackTrace();
+            throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);
+        }
+
     }
     public MyPageDto getMyPage(){
         Member member = getMe();
@@ -95,10 +116,14 @@ public class MemberService {
     }
 
     public List<MemberIntroductionCreateDto> getRecommendedInstruction() {
-        List<Member> recommendMembers = memberRepository.findById(SecurityUtil.getCurrentMemberId())
-                .orElseThrow(()-> new RestApiException(ErrorCode.NOT_EXIST_ERROR)).getRecommendMembers();
-        //List<Member> members = memberRepository.findAllByPutOnRecommend(true);
-        List<MemberIntroduction> introductions = recommendMembers.stream().map(Member::getIntroduction).toList();
+        List<Similarity> similarities = similarityRepository.findByMembersOrderBySimilarity(getMe());
+        List<MemberIntroduction> introductions = new ArrayList<>();
+        for(Similarity similarity : similarities){
+            Member other = similarity.getOtherMember(getMe());
+            if(other.getIntroductionWritten() && other.getPutOnRecommend() && (similarity.getSimilarity()>0.5)){
+                introductions.add(other.getIntroduction());
+            }
+        }
         return introductions.stream().map(MemberIntroduction::toIntroductionDto).toList();
     }
 
@@ -109,13 +134,8 @@ public class MemberService {
         return surveyDto;
     }
 
-    public MemberAnalyzeInfo writeAnalyzeInfo(SurveyRequestDto surveyRequestDto) {
-        Member member = getMe();
-        MemberAnalyzeInfo memberAnalyzeInfo = surveyRequestDto.toEntity(member, surveyRequestDto);
-        return memberAnalyzeRepository.save(memberAnalyzeInfo);
-    }
-    public MemberAnalyzeInfo getAnalyzeInfo(Long id) {
-        return memberAnalyzeRepository.findById(id).orElseThrow(()-> new RestApiException(ErrorCode.NOT_EXIST_ERROR));
+    public MemberAnalyzeInfoDto getAnalyzeInfo(Long id) {
+        return memberAnalyzeRepository.findById(id).orElseThrow(()-> new RestApiException(ErrorCode.NOT_EXIST_ERROR)).toDto();
     }
     public Member findMemberByNickname(String nickname){
         return memberRepository.findByNickname(nickname).orElseThrow(()-> new RestApiException(ErrorCode.NOT_EXIST_ERROR));

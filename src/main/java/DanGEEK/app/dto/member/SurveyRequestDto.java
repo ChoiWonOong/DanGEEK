@@ -18,19 +18,19 @@ public class SurveyRequestDto {
     private List<String> hobbies;
     @Getter
     private static class Cleanliness {
-        private String answer1;
-        private String answer2;
-        private String answer3;
-        private String answer4;
-        private String answer5;
-        private String answer6;
-        private String answer7;
-        private String answer8;
-        private String answer9;
-        private String answer10;
+        private int answer1;
+        private int answer2;
+        private int answer3;
+        private int answer4;
+        private int answer5;
+        private int answer6;
+        private int answer7;
+        private int answer8;
+        private int answer9;
+        private int answer10;
     }
 
-    public List<String> getCleanliness() {
+    public List<Integer> getCleanliness() {
         return List.of(
             cleanliness.getAnswer1(),
             cleanliness.getAnswer2(),
@@ -44,7 +44,6 @@ public class SurveyRequestDto {
             cleanliness.getAnswer10()
         );
     }
-
     @Builder
     public MemberAnalyzeInfo toEntity(Member member, SurveyRequestDto dto) {
         return new MemberAnalyzeInfo(member, dto);

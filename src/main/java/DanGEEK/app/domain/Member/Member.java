@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 @Entity
 @Table(name = "member")
 @NoArgsConstructor
@@ -36,9 +38,11 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String nickname;
     @Column(nullable = false)
+    @Getter
     private Boolean introductionWritten = false;
 
     @Column(nullable = false)
+    @Getter
     private Boolean putOnRecommend = false;
     @Getter
     @OneToOne
@@ -58,9 +62,10 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "fcm_token")
     private FCMToken fcmToken;
 
-    @OneToMany
-    private List<Member> recommendOrder = new ArrayList<>();
-
+    @OneToOne
+    @Getter
+    @JoinColumn(name = "member_analyze_info")
+    private MemberAnalyzeInfo memberAnalyzeInfo;
     @Getter
     @Enumerated(EnumType.STRING)
     private Authority authority;
@@ -94,9 +99,5 @@ public class Member extends BaseEntity {
     }
     public MyPageDto MemberToMyPageDto(){
         return new MyPageDto(this.username, this.nickname, this.introductionWritten, this.putOnRecommend, this.imageUrl);
-    }
-
-    public List<Member> getRecommendMembers() {
-        return recommendOrder;
     }
 }

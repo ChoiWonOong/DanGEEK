@@ -5,6 +5,7 @@ import DanGEEK.app.dto.member.SurveyRequestDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,6 +20,8 @@ public class FlaskService {
 
     //데이터를 JSON 객체로 변환하기 위해서 사용
     private final ObjectMapper objectMapper;
+    @Value("${flask.endpoint}")
+    String url = "{flask.endpoint}";
 
     @Transactional
     public String checkBadWords(FlaskDto dto) throws JsonProcessingException {
@@ -35,10 +38,9 @@ public class FlaskService {
         HttpEntity<String> entity = new HttpEntity<String>(param , headers);
 
         //실제 Flask 서버랑 연결하기 위한 URL
-        String url = "http://112.149.233.39:8080/receive_string";
 
         //Flask 서버로 데이터를 전송하고 받은 응답 값을 return
-        return restTemplate.postForObject(url, entity, String.class);
+        return restTemplate.postForObject(url + "/receive_string", entity, String.class);
     }
 
     public ResponseEntity<?> sendInfo(SurveyRequestDto surveyRequestDto) {

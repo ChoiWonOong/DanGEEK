@@ -20,10 +20,11 @@ public class FlaskController {
     private final FlaskService flaskService;
 
     @PostMapping("/checkBadWords")
-    public void checkBadWords() throws JsonProcessingException {
-        FlaskDto flaskDto = new FlaskDto("나쁜 단어", 0);
+    public ResponseEntity<?> checkBadWords() throws JsonProcessingException {
+        FlaskDto flaskDto = new FlaskDto("나쁜 단어",1);
         String result = flaskService.checkBadWords(flaskDto);
         log.info("result : ",result);
+        return ResponseEntity.ok(result);
     }
     @PostMapping("/send/info")
     public ResponseEntity<?> sendInfo(@RequestBody SurveyRequestDto surveyRequestDto) {

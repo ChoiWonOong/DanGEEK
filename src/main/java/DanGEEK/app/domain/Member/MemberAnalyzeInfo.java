@@ -1,5 +1,6 @@
 package DanGEEK.app.domain.Member;
 
+import DanGEEK.app.dto.member.MemberAnalyzeInfoDto;
 import DanGEEK.app.dto.member.SurveyRequestDto;
 import DanGEEK.app.util.StringListConverter;
 import jakarta.persistence.*;
@@ -24,7 +25,7 @@ public class MemberAnalyzeInfo {
 
     @Column(name = "cleanliness")
     @Convert(converter = StringListConverter.class)
-    private List<String> cleanliness = new ArrayList<>();
+    private List<Integer> cleanliness = new ArrayList<>();
 
     private int wakeTime;
     private int sleepTime;
@@ -39,5 +40,22 @@ public class MemberAnalyzeInfo {
         this.wakeTime = dto.getWakeTime();
         this.sleepTime = dto.getSleepTime();
         this.hobbies = dto.getHobbies();
+    }
+    public MemberAnalyzeInfoDto toDto(){
+        return new MemberAnalyzeInfoDto(this);
+    }
+
+    public double getCosineSimilarity(MemberAnalyzeInfo other){
+        double dotProduct = 0;
+        double norm1 = 0;
+        double norm2 = 0;
+        List<Integer> myVector = this.cleanliness;
+        List<Integer> otherVector = other.cleanliness;
+        for (int i = 0; i < otherVector.size(); i++) {
+            dotProduct += otherVector.get(i) * myVector.get(i);
+            norm1 += Math.pow(otherVector.get(i), 2);
+            norm2 += Math.pow(myVector.get(i), 2);
+        }
+        return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
     }
 }

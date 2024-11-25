@@ -1,9 +1,6 @@
 package DanGEEK.app.service;
 
-import DanGEEK.app.Exception.ErrorCode;
-import DanGEEK.app.Exception.RestApiException;
 import DanGEEK.app.domain.Chat;
-import DanGEEK.app.domain.ChatRoom;
 import DanGEEK.app.domain.Member.Member;
 import DanGEEK.app.domain.MessageType;
 import DanGEEK.app.dto.chat.ChatRequestDto;
@@ -25,19 +22,19 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
+
     private final MemberService memberService;
     public void talk(Long roomId,ChatRequestDto chatDto) {
-        Member member = memberService.getMe();
+        long memberId = chatDto.getSenderId();
+        Member member = memberService.findMemberById(memberId);
         String nickname = member.getNickname();
         chatDto.setRoomId(roomId);
         Chat chat = chatDto.toEntity(MessageType.TALK);
-        chat.setSenderNickname(member.getNickname());
+        chat.setSenderNickname(nickname);
         simpMessagingTemplate.convertAndSend("/sub/chatroom/" + roomId, chat.toResponseDto());
         chatRepository.save(chat);
     }
     public void enterChatRoom(Long roomId, ChatRequestDto chatDto){
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId)
-                .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
         Member member = memberService.findMemberById(chatDto.getSenderId());//ChatRoomMember chatRoomMember = ;
         String nickname = member.getNickname();
         chatDto.setRoomId(roomId);

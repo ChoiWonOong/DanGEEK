@@ -22,6 +22,6 @@ public class MemberAnalyzeInfoDto {
         this.cleanliness = memberAnalyzeInfo.getCleanliness();
         this.wakeTime = memberAnalyzeInfo.getWakeTime();
         this.sleepTime = memberAnalyzeInfo.getSleepTime();
-        this.hobbies = memberAnalyzeInfo.getHobbies();
+        //this.hobbies = memberAnalyzeInfo.getHobbies();
     }
 }

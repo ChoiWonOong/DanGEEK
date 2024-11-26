@@ -30,7 +30,7 @@ public class MemberService {
     private final MemberHobbyRepository memberHobbyRepository;
     private final S3Service s3Service;
     private final MemberAnalyzeRepository memberAnalyzeRepository;
-    private final SimilarityRepository similarityRepository;
+    private final AnalysisSimilarityRepository analysisSimilarityRepository;
 
     public MemberIntroduction introductionDtoToEntity(MemberIntroductionCreateDto memberIntroductionCreateDto) {
         Member member = getMe();
@@ -50,6 +50,7 @@ public class MemberService {
         memberRepository.save(member);
         return member.MemberToMyPageDto();
     }
+    @Transactional
     public MemberIntroductionCreateDto writeIntroduction(MemberIntroductionCreateDto memberIntroductionCreateDto){
         try{
             Member member = getMe();
@@ -57,35 +58,12 @@ public class MemberService {
             log.info("memberIntroduction contents : {}",memberIntroduction.getContents());
             member.writeIntroduction(memberIntroduction);
             memberIntroductionRepository.save(memberIntroduction);
-            //calculateSimilarity();
             return member.getIntroduction().toIntroductionDto();
         }catch (RestApiException e){
             StackTraceElement stackTrace = e.getStackTrace()[0];
             log.error(e.getMessage(), stackTrace);
             throw new RestApiException(ErrorCode.NOT_EXIST_ERROR, stackTrace);
         }
-    }
-    @Transactional
-    void calculateSimilarity(){
-        Member me = getMe();
-        MemberAnalyzeInfo myInfo = me.getMemberAnalyzeInfo();
-        List<MemberAnalyzeInfo> analyzeInfos = memberAnalyzeInfoRepository.findAll();
-        try {
-            if(analyzeInfos.isEmpty()) throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);
-            for (MemberAnalyzeInfo analyzeInfo : analyzeInfos) {
-                Member other = analyzeInfo.getMember();
-                double similarity = analyzeInfo.getCosineSimilarity(myInfo);
-                similarityRepository.save(new Similarity(me, other, similarity));
-            }
-        }catch (RestApiException e){
-            e.printStackTrace();
-            throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);
-        }/*
-        catch (RuntimeException e){
-            e.printStackTrace();
-            throw new RuntimeException();
-        }*/
-
     }
     public MyPageDto getMyPage(){
         Member member = getMe();
@@ -121,11 +99,17 @@ public class MemberService {
     }
 
     public List<MemberIntroductionCreateDto> getRecommendedInstruction() {
-        List<Similarity> similarities = similarityRepository.findByMembersOrderBySimilarity(getMe());
+        Member me = getMe();
+        log.info("me : {}", me.getNickname());
+        MemberAnalyzeInfo myInfo = memberAnalyzeInfoRepository.findByMember(me).orElseThrow(()-> new RestApiException(ErrorCode.NOT_EXIST_ERROR));
+        log.info("myInfo : {}", myInfo.getId());
+        List<AnalysisSimilarity> mySimilarities = analysisSimilarityRepository.findByAnalysisInfoAndSimilarityGreaterThanEqual(myInfo, 0.9);
+        if(mySimilarities.isEmpty()) throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);
         List<MemberIntroduction> introductions = new ArrayList<>();
-        for(Similarity similarity : similarities){
-            Member other = similarity.getOtherMember(getMe());
-            if(other.getIntroductionWritten() && other.getPutOnRecommend() && (similarity.getSimilarity()>0.5)){
+        for(AnalysisSimilarity similarity : mySimilarities){
+            Member other = similarity.getOtherAnalysis(myInfo).getMember();
+            log.info("other : {}", other.getNickname());
+            if(other.getIntroductionWritten() && other.getPutOnRecommend()){
                 introductions.add(other.getIntroduction());
             }
         }
@@ -135,17 +119,40 @@ public class MemberService {
     public SurveyRequestDto writeSurvey(SurveyRequestDto surveyDto) {
         Member member = getMe();
         Optional<MemberAnalyzeInfo> optionalMemberAnalyzeInfo = memberAnalyzeInfoRepository.findByMember(member);
+        MemberAnalyzeInfo memberAnalyzeInfo;
         if(optionalMemberAnalyzeInfo.isPresent()){
-            MemberAnalyzeInfo memberAnalyzeInfo = optionalMemberAnalyzeInfo.get();
+            memberAnalyzeInfo = optionalMemberAnalyzeInfo.get();
             memberAnalyzeInfo = memberAnalyzeInfo.update(surveyDto);
-            memberAnalyzeInfoRepository.save(memberAnalyzeInfo);
+            memberAnalyzeInfo = memberAnalyzeInfoRepository.save(memberAnalyzeInfo);
         }else{
-            MemberAnalyzeInfo memberAnalyzeInfo = new MemberAnalyzeInfo(member, surveyDto);
-            memberAnalyzeInfoRepository.save(memberAnalyzeInfo);
+            memberAnalyzeInfo = new MemberAnalyzeInfo(member, surveyDto);
+            memberAnalyzeInfo = memberAnalyzeInfoRepository.save(memberAnalyzeInfo);
         }
+        calculateSimilarity(memberAnalyzeInfo);
         return surveyDto;
     }
-
+    @Transactional
+    void calculateSimilarity(MemberAnalyzeInfo myInfo){
+        log.info("myInfo : {}", myInfo.toString());
+        List<MemberAnalyzeInfo> analyzeInfos = memberAnalyzeInfoRepository.findAll();
+        if(analyzeInfos.isEmpty()) throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);
+        if(analysisSimilarityRepository.findByAnalyzeInfo(myInfo).isEmpty()){
+            log.info("similarity is empty");
+            for (MemberAnalyzeInfo othersAnalyzeInfo : analyzeInfos) {
+                if(othersAnalyzeInfo.getMember().equals(myInfo.getMember())) continue;
+                double similarity = othersAnalyzeInfo.getCosineSimilarity(myInfo);
+                analysisSimilarityRepository.save(new AnalysisSimilarity(myInfo, othersAnalyzeInfo, similarity));
+                //similarityRepository.save(new Similarity(me, other, similarity));
+            }
+        }else{
+            log.info("similarity is not empty");
+            List<AnalysisSimilarity> mymySimilarities = analysisSimilarityRepository.findByAnalyzeInfo(myInfo);
+            for (AnalysisSimilarity mySimilarity : mymySimilarities) {
+                mySimilarity.update();
+                analysisSimilarityRepository.save(mySimilarity);
+            }
+        }
+    }
     public MemberAnalyzeInfoDto getAnalyzeInfo(Long id) {
         return memberAnalyzeRepository.findById(id).orElseThrow(()-> new RestApiException(ErrorCode.NOT_EXIST_ERROR)).toDto();
     }

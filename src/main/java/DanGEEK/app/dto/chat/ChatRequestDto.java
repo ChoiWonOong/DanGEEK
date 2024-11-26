@@ -1,6 +1,6 @@
 package DanGEEK.app.dto.chat;
 
-import DanGEEK.app.domain.Chat;
+import DanGEEK.app.domain.Chat.Chat;
 import DanGEEK.app.domain.MessageType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,5 +19,7 @@ public class ChatRequestDto {
     public Chat toEntity(MessageType type) {
         return new Chat(roomId, senderId, message, type);
     }
-
+    public ChatRequestDto(Long senderId) {
+        this.senderId = senderId;
+    }
 }

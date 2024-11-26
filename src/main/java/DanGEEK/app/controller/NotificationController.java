@@ -1,3 +1,4 @@
+/*
 package DanGEEK.app.controller;
 
 import DanGEEK.app.Exception.ErrorResponse;
@@ -49,4 +50,4 @@ public class NotificationController {
             return ErrorResponse.toResponseEntity(e);
         }
     }
-}
+}*/

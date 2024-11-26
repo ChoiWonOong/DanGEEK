@@ -1,3 +1,4 @@
+/*
 package DanGEEK.app.domain;
 
 import DanGEEK.app.domain.Member.Member;
@@ -19,6 +20,7 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name="post_id")
     private Post post;
+
 
     @Getter
     @ManyToOne
@@ -45,3 +47,4 @@ public class Notification {
     }
 
 }
+*/

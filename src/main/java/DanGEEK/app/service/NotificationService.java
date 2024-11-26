@@ -1,9 +1,10 @@
+/*
 package DanGEEK.app.service;
 
 
 import DanGEEK.app.Exception.ErrorCode;
 import DanGEEK.app.Exception.RestApiException;
-import DanGEEK.app.domain.ChatRoomMember;
+import DanGEEK.app.domain.Chat.ChatRoomMember;
 import DanGEEK.app.domain.Member.Member;
 import DanGEEK.app.domain.Member.MemberIntroduction;
 import DanGEEK.app.domain.Notification;
@@ -40,7 +41,7 @@ public class NotificationService {
     public ChatRoomMember answerNotification(NotificationAnswerDto notificationAnswerDto){
         Notification notification = notificationRepository.findById(notificationAnswerDto.getNotificationId())
                 .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
-        ChatRoomMember chatRoomMember = chatRoomMemberService.createChatRoomMember(notification.getPost().getChatRoom().getRoomId(), SecurityUtil.getCurrentMemberId());
+        ChatRoomMember chatRoomMember = chatRoomMemberService.createChatRoomMember(notification.getPost().getChatRoom().getRoomId());
         notificationRepository.delete(notification);
         return chatRoomMember;
     }
@@ -72,12 +73,14 @@ public class NotificationService {
         return emitter;
     }
 
-    /**
+    */
+/**
      * 서버의 이벤트를 클라이언트에게 보내는 메서드
      * 다른 서비스 로직에서 이 메서드를 사용해 데이터를 Object event에 넣고 전송하면 된다.
      * param userId - 메세지를 전송할 사용자의 아이디.
      * param event  - 전송할 이벤트 객체.
-     */
+     *//*
+
     public Notification createNotification(Post post, Member sender){
         Notification notification = new Notification(post, post.getMember(), sender);
         return notificationRepository.save(notification);
@@ -98,12 +101,14 @@ public class NotificationService {
         return notificationSendDto;
     }
 
-    /**
+    */
+/**
      * 클라이언트에게 데이터를 전송
      *
      * @param id   - 데이터를 받을 사용자의 아이디.
      * @param data - 전송할 데이터.
-     */
+     *//*
+
     private void sendToClient(Long id, Object data) { //data
         SseEmitter emitter = emitterRepository.get(id);
         if (emitter != null) {
@@ -116,12 +121,14 @@ public class NotificationService {
         }
     }
 
-    /**
+    */
+/**
      * 사용자 아이디를 기반으로 이벤트 Emitter를 생성
      *
      * @param id - 사용자 아이디.
      * @return SseEmitter - 생성된 이벤트 Emitter.
-     */
+     *//*
+
     private SseEmitter createEmitter(Long id) {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
         emitterRepository.save(id, emitter);
@@ -133,4 +140,4 @@ public class NotificationService {
 
         return emitter;
     }
-}
+}*/

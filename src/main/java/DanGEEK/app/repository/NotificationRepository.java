@@ -1,3 +1,4 @@
+/*
 package DanGEEK.app.repository;
 
 import DanGEEK.app.domain.Member.Member;
@@ -9,3 +10,4 @@ import java.util.List;
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     List<Notification> findAllByReceiver(Member receiver);
 }
+*/

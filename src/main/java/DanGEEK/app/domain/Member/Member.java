@@ -54,9 +54,11 @@ public class Member extends BaseEntity {
     @OneToMany
     @JoinColumn(name="posts")
     private List<Post> posts;
+/*
     @OneToMany
     @JoinColumn(name = "notifications")
     private List<Notification> notifications;
+*/
 
     @OneToOne
     @JoinColumn(name = "fcm_token")

@@ -1,5 +1,7 @@
 package DanGEEK.app.dto.post;
 
+import DanGEEK.app.domain.Member.Member;
+import DanGEEK.app.domain.Post;
 import DanGEEK.app.dto.chat.ChatRoomResponseDto;
 import DanGEEK.app.dto.member.MemberIntroductionCreateDto;
 import DanGEEK.app.util.SecurityUtil;
@@ -11,8 +13,8 @@ import lombok.Setter;
 public class MateInviteResponseDto extends PostResponseDto{
     private MemberIntroductionCreateDto memberIntroduction;
     private ChatRoomResponseDto chatRoomResponse;
-    public MateInviteResponseDto(Long post_id, String title, String contents, String nickname, String post_type, MemberIntroductionCreateDto memberIntroductionCreateDto, ChatRoomResponseDto chatRoomResponseDto) {
-        super(post_id, SecurityUtil.getCurrentMemberId(),title, contents, nickname, post_type, chatRoomResponseDto);
-        this.memberIntroduction = memberIntroductionCreateDto;
+    public MateInviteResponseDto(Post post, Member member, ChatRoomResponseDto chatRoomResponseDto) {
+        super(post.getId(), member.getId(),post.getTitle(), post.getContents(), member.getNickname(), post.getType().getString(), chatRoomResponseDto);
+        this.memberIntroduction = member.getIntroduction().toIntroductionDto();
     }
 }

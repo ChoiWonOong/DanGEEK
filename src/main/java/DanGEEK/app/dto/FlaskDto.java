@@ -10,4 +10,8 @@ import lombok.NoArgsConstructor;
 public class FlaskDto {
     String message;
     int result = 1; //default : pass
+
+    public FlaskDto(String message) {
+        this.message = message;
+    }
 }

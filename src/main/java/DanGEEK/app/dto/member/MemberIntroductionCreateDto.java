@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class MemberIntroductionCreateDto {
+    private Long id;
     private String name;
     private String major;
     private String grade;
@@ -34,7 +35,7 @@ public class MemberIntroductionCreateDto {
     }
     public MemberIntroductionCreateDto toIntroductionDto(List<String> hobbies){
         return new MemberIntroductionCreateDto(
-                this.name, this.major, this.grade, this.sex, this.personality, hobbies, this.contents
+                this.id, this.name, this.major, this.grade, this.sex, this.personality, hobbies, this.contents
         );
     }
 

@@ -51,7 +51,17 @@ public class MemberIntroduction extends BaseEntity {
     }
 
     public MemberIntroductionCreateDto toIntroductionDto() {
-        return new MemberIntroductionCreateDto(name, major, grade, sex, personality, getHobbyList(), contents);
+        return new MemberIntroductionCreateDto(id, name, major, grade, sex, personality, getHobbyList(), contents);
+    }
+    public MemberIntroduction update(MemberIntroductionCreateDto dto, List<MemberHobby> hobbyList){
+        this.name = dto.getName();
+        this.major = dto.getMajor();
+        this.grade = dto.getGrade();
+        this.sex = dto.getSex();
+        this.personality = dto.getPersonality();
+        this.contents = dto.getContents();
+        this.hobbies = hobbyList;
+        return this;
     }
     public List<String> getHobbyList(){
         return hobbies.stream().map(h->h.getHobby().getName()).toList();

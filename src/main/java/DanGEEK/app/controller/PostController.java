@@ -26,7 +26,7 @@ public class PostController {
     @PostMapping("/invite/create")
     public ResponseEntity<MateInviteResponseDto> createInvitePost(@RequestBody PostCreateRequestDto postDto){
         postDto.setPost_type(PostType.INVITE.getType());
-        log.info("postDto : {}",postDto);
+        //log.info("postDto : {}",postDto);
         return ResponseEntity.ok((MateInviteResponseDto) postService.createInvitePost(postDto).toResponseDto());
     }
     @PostMapping("/group_buy/create")
@@ -78,7 +78,7 @@ public class PostController {
                 .stream().map(Post::toResponseDto).toList());
     }
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPostDetail(@PathVariable Long id){
+    public ResponseEntity<?> getPostDetail(@PathVariable(value = "id") Long id){
         try{
             return ResponseEntity.ok(postService.getPost(id));
         }
@@ -98,9 +98,9 @@ public class PostController {
         }
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePost(@PathVariable Long id){
+    public ResponseEntity<?> deletePost(@PathVariable(value = "id") Long id){
         try{
-            return ResponseEntity.ok(postService.delete(id).toResponseDto());
+            return ResponseEntity.ok(postService.delete(id));
         }
         catch (RuntimeException e){
             return ErrorResponse.toResponseEntity(e);

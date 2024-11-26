@@ -2,7 +2,6 @@ package DanGEEK.app.controller;
 
 import DanGEEK.app.Exception.ErrorResponse;
 import DanGEEK.app.Exception.RestApiException;
-import DanGEEK.app.domain.ChatRoom;
 import DanGEEK.app.dto.chat.ChatRoomCreateDto;
 import DanGEEK.app.dto.chat.ChatRoomResponseDto;
 import DanGEEK.app.service.ChatRoomService;

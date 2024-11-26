@@ -2,8 +2,8 @@ package DanGEEK.app.service;
 
 import DanGEEK.app.Exception.ErrorCode;
 import DanGEEK.app.Exception.RestApiException;
-import DanGEEK.app.domain.ChatRoom;
-import DanGEEK.app.domain.ChatRoomMember;
+import DanGEEK.app.domain.Chat.ChatRoom;
+import DanGEEK.app.domain.Chat.ChatRoomMember;
 import DanGEEK.app.domain.Member.Member;
 import DanGEEK.app.dto.chat.ChatRoomResponseDto;
 import DanGEEK.app.repository.ChatRoomMemberRepository;
@@ -21,6 +21,8 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
+    private final ChatService chatService;
+    private final ChatRoomMemberService chatRoomMember;
     public List<ChatRoomResponseDto> findAllRooms(){
         return chatRoomRepository.findAll().stream().map(ChatRoom::toResponseDto).toList();
     }
@@ -48,5 +50,9 @@ public class ChatRoomService {
     public void deleteChatRoom(Long roomId){
         chatRoomRepository.deleteById(roomId);
     }
-
+    public void deleteChatRoomMember(Long roomId){
+        chatRoomMember.deleteChatRoomMember(roomId);
+        deleteChatRoom(roomId);
+        chatService.deleteChatRoom(roomId);
+    }
 }

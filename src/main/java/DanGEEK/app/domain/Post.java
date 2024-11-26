@@ -1,5 +1,6 @@
 package DanGEEK.app.domain;
 
+import DanGEEK.app.domain.Chat.ChatRoom;
 import DanGEEK.app.domain.Member.Member;
 import DanGEEK.app.dto.post.*;
 import jakarta.persistence.*;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "post")
 public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,9 +47,7 @@ public class Post extends BaseEntity {
     private Member member;
 
     @Getter
-    @Setter
-    @OneToOne
-    @JoinColumn(name = "chat_room_id")
+    @OneToOne()
     private ChatRoom chatRoom;
 
     public Post(PostCreateRequestDto dto, Member member, ChatRoom chatRoom) {
@@ -80,13 +80,12 @@ public class Post extends BaseEntity {
     public PostResponseDto toResponseDto() {
         PostResponseDto dto;
         if (type == PostType.GROUP_BUY) {
-            dto = new GroupBuyResponseDto(id, title, contents, member.getNickname(), type.getType(), link, mallName, item, price, chatRoom.toResponseDto());
+            dto = new GroupBuyResponseDto(this, getMember(), chatRoom.toResponseDto());
         } else if (type == PostType.INVITE) {
-            dto = new MateInviteResponseDto(id, title, contents, member.getNickname(), type.getType(), member.getIntroduction().toIntroductionDto(), chatRoom.toResponseDto());
+            dto = new MateInviteResponseDto(this, member, chatRoom.toResponseDto());
         } else{
-            dto = new ComplainResponseDto(id, title, contents, member.getNickname(), type.getType(), dormitoryName, dormRoomNumber);
+            dto = new ComplainResponseDto(this, member);
         }
-        log.info("dto : {}", dto);
         return dto;
     }
 }

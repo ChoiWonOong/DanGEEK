@@ -1,9 +1,10 @@
 package DanGEEK.app.service;
 
 import DanGEEK.app.Exception.ErrorCode;
+import DanGEEK.app.Exception.ErrorResponse;
 import DanGEEK.app.Exception.RestApiException;
-import DanGEEK.app.domain.ChatRoom;
-import DanGEEK.app.domain.ChatRoomMember;
+import DanGEEK.app.domain.Chat.ChatRoom;
+import DanGEEK.app.domain.Chat.ChatRoomMember;
 import DanGEEK.app.domain.Member.Member;
 import DanGEEK.app.domain.Member.MemberIntroduction;
 import DanGEEK.app.domain.Post;
@@ -11,10 +12,10 @@ import DanGEEK.app.domain.PostType;
 import DanGEEK.app.dto.post.*;
 import DanGEEK.app.repository.MemberRepository;
 import DanGEEK.app.repository.PostRepository;
-import DanGEEK.app.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Slf4j
@@ -22,20 +23,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    private final MemberRepository memberRepository;
     private final ChatRoomService chatRoomService;
     private final MemberService memberService;
     private final ChatRoomMemberService chatRoomMemberService;
-
+    private final ChatService chatService;
     public Post createInvitePost(PostCreateRequestDto postDto) {
+        // 채팅방 생성
         ChatRoom chatRoom = chatRoomService.createChatRoom(memberService.getMe().getNickname(), postDto.getMaxUser());
-        log.info("chatRoom : {} {}", chatRoom.getRoomId(), chatRoom.getMaxUser());
+        // 게시글 생성
         Post post = new Post(postDto.getTitle(), postDto.getContents(), PostType.getPostType(postDto.getPost_type()), memberService.getMe(), chatRoom);
+        // 게시글 저장
         post = postRepository.save(post);
-        log.info("post : {} {}", post.getMember().getIntroduction().getContents(), chatRoom.getRoomId());
-        // enterRoom
-        ChatRoomMember chatRoomMember = chatRoomMemberService.createChatRoomMember(chatRoom.getRoomId(), SecurityUtil.getCurrentMemberId());
-        log.info("chatRoomMember : {} {}", chatRoomMember.getMemberId(), chatRoomMember.getRoomId());
+        // 채팅방 입장
+        ChatRoomMember chatRoomMember = chatRoomMemberService.createChatRoomMember(chatRoom.getRoomId());
+        //log.info("chatRoomMember : {} {}", chatRoomMember.getMemberId(), chatRoomMember.getRoomId());
         return post;
     }
     public Post createGroupBuyPost(PostCreateRequestDto postDto, String url) {
@@ -45,7 +46,7 @@ public class PostService {
         post.setImageUrl(url);
         post = postRepository.save(post);
         // enterRoom
-        ChatRoomMember chatRoomMember = chatRoomMemberService.createChatRoomMember(chatRoom.getRoomId(), SecurityUtil.getCurrentMemberId());
+        ChatRoomMember chatRoomMember = chatRoomMemberService.createChatRoomMember(chatRoom.getRoomId());
         log.info("chatRoomMember : {} {}", chatRoomMember.getMemberId(), chatRoomMember.getRoomId());
         return post;
     }
@@ -64,11 +65,30 @@ public class PostService {
         postRepository.save(post);
         return post;
     }
-    public Post delete(Long post_id){
+    @Transactional
+    public PostDeleteDto delete(Long post_id){
+        try{
         Post post = postRepository.findById(post_id)
                 .orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
+        Long roomId;
+        if(post.getType().equals(PostType.INVITE)){
+            roomId = post.getChatRoom().getRoomId();
+        }
+        else if(post.getType().equals(PostType.GROUP_BUY)){
+            roomId = post.getChatRoom().getRoomId();
+        }
+        else{
+            throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);
+        }
+
+        log.info("delete post : {}", post_id);
+        chatRoomService.deleteChatRoomMember(roomId);
         postRepository.delete(post);
-        return post;
+        return new PostDeleteDto(post_id, roomId);
+        }
+        catch (RuntimeException e){
+            throw new RuntimeException(e);
+        }
     }
     public PostResponseDto getPost(Long id){
         Post post = postRepository.findById(id).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
@@ -98,4 +118,5 @@ public class PostService {
     public Post findById(Long postId) {
         return postRepository.findById(postId).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
     }
+
 }

@@ -1,4 +1,4 @@
-package DanGEEK.app.domain;
+package DanGEEK.app.domain.Chat;
 
 import DanGEEK.app.dto.chat.ChatRoomCreateDto;
 import DanGEEK.app.dto.chat.ChatRoomResponseDto;

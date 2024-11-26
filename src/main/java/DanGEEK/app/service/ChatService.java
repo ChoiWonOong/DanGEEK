@@ -1,14 +1,15 @@
 package DanGEEK.app.service;
 
-import DanGEEK.app.domain.Chat;
+import DanGEEK.app.domain.Chat.Chat;
 import DanGEEK.app.domain.Member.Member;
 import DanGEEK.app.domain.MessageType;
+import DanGEEK.app.dto.FlaskDto;
 import DanGEEK.app.dto.chat.ChatRequestDto;
 import DanGEEK.app.dto.chat.ChatResponseDto;
 import DanGEEK.app.repository.ChatRepository;
 import DanGEEK.app.repository.ChatRoomMemberRepository;
 import DanGEEK.app.repository.ChatRoomRepository;
-import DanGEEK.app.repository.MemberRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -20,15 +21,14 @@ import java.util.List;
 public class ChatService {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatRepository chatRepository;
-    private final ChatRoomRepository chatRoomRepository;
-    private final ChatRoomMemberRepository chatRoomMemberRepository;
-
+    private final FlaskService flaskService;
     private final MemberService memberService;
-    public void talk(Long roomId,ChatRequestDto chatDto) {
+    public void talk(Long roomId,ChatRequestDto chatDto) throws JsonProcessingException {
         long memberId = chatDto.getSenderId();
         Member member = memberService.findMemberById(memberId);
         String nickname = member.getNickname();
         chatDto.setRoomId(roomId);
+        flaskService.checkBadWords(new FlaskDto(chatDto.getMessage()));
         Chat chat = chatDto.toEntity(MessageType.TALK);
         chat.setSenderNickname(nickname);
         simpMessagingTemplate.convertAndSend("/sub/chatroom/" + roomId, chat.toResponseDto());
@@ -53,7 +53,10 @@ public class ChatService {
         simpMessagingTemplate.convertAndSend("/sub/chatroom/" + roomId, chat.toResponseDto());
         chatRepository.save(chat);
     }
-    public List<ChatResponseDto> findAllByRoomId(Long roomId){
+    public List<ChatResponseDto> findByRoomId(Long roomId){
         return Chat.toDtoList(chatRepository.findAllByRoomId(roomId));
+    }
+    public void deleteChatRoom(Long roomId){
+        chatRepository.deleteAllByRoomId(roomId);
     }
 }

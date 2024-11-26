@@ -1,5 +1,6 @@
-package DanGEEK.app.domain;
+package DanGEEK.app.domain.Chat;
 
+import DanGEEK.app.domain.MessageType;
 import DanGEEK.app.dto.chat.ChatResponseDto;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,8 @@ public class Chat {
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime created_at;
+    @Column(name = "is_bad_words")
+    private boolean isBadWords = false;
 
     public Chat(Long roomId, Long senderId, String message, MessageType type) {
         this.roomId = roomId;
@@ -43,5 +46,8 @@ public class Chat {
             chatDtos.add(dto);
         }
         return chatDtos;
+    }
+    public void setBadWords(){
+        isBadWords = true;
     }
 }

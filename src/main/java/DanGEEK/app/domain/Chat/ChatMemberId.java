@@ -1,4 +1,4 @@
-package DanGEEK.app.domain;
+package DanGEEK.app.domain.Chat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

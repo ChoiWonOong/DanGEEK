@@ -125,6 +125,7 @@ public class MemberService {
             memberAnalyzeInfo = memberAnalyzeInfo.update(surveyDto);
             memberAnalyzeInfo = memberAnalyzeInfoRepository.save(memberAnalyzeInfo);
         }else{
+            member.surveyDone();
             memberAnalyzeInfo = new MemberAnalyzeInfo(member, surveyDto);
             memberAnalyzeInfo = memberAnalyzeInfoRepository.save(memberAnalyzeInfo);
         }

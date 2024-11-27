@@ -40,7 +40,9 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     @Getter
     private Boolean introductionWritten = false;
-
+    @Column(nullable = false)
+    @Getter
+    private Boolean surveyDone = false;
     @Column(nullable = false)
     @Getter
     private Boolean putOnRecommend = false;
@@ -96,10 +98,13 @@ public class Member extends BaseEntity {
         this.introductionWritten = true;
         this.introduction = memberIntroduction;
     }
+    public void surveyDone(){
+        this.surveyDone = true;
+    }
     public void changePutOutToRecommend(Boolean putOnRecommend){
         this.putOnRecommend= putOnRecommend;
     }
     public MyPageDto MemberToMyPageDto(){
-        return new MyPageDto(this.username, this.nickname, this.introductionWritten, this.putOnRecommend, this.imageUrl);
+        return new MyPageDto(this.username, this.nickname, this.introductionWritten, this.surveyDone, this.putOnRecommend, this.imageUrl);
     }
 }

@@ -6,11 +6,9 @@ import DanGEEK.app.service.FlaskService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.json.ParseException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class FlaskController {
     private final FlaskService flaskService;
 
-    @PostMapping("/checkBadWords")
-    public ResponseEntity<?> checkBadWords(String words) throws JsonProcessingException {
+    @PostMapping("/checkBadWords/{words}")
+    public ResponseEntity<?> checkBadWords(@PathVariable(value = "words") String words) throws JsonProcessingException, ParseException {
         FlaskDto flaskDto = new FlaskDto(words,1);
-        String result = flaskService.checkBadWords(flaskDto);
+        boolean result = flaskService.checkBadWords(flaskDto);
         log.info("result : ",result);
         return ResponseEntity.ok(result);
     }

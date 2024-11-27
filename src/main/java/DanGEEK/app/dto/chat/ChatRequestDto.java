@@ -15,11 +15,22 @@ public class ChatRequestDto {
     private Long roomId;
     @Setter
     private String message;
-    private Long senderId;
-    public Chat toEntity(MessageType type) {
-        return new Chat(roomId, senderId, message, type);
+
+    public ChatRequestDto(Long id) {
+        this.roomId = id;
     }
-    public ChatRequestDto(Long senderId) {
-        this.senderId = senderId;
+
+    public Chat toEntity(MessageType type) {
+        return new Chat(roomId, message, type);
+    }
+    @Setter
+    private Long senderId;
+    @Override
+    public String toString() {
+        return "ChatRequestDto{" +
+                "roomId=" + roomId +
+                ", message='" + message + '\'' +
+                ", senderId=" + senderId +
+                '}';
     }
 }

@@ -3,6 +3,7 @@ package DanGEEK.app.domain.Chat;
 import DanGEEK.app.domain.MessageType;
 import DanGEEK.app.dto.chat.ChatResponseDto;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,6 +20,7 @@ public class Chat {
     private Long id;
     private MessageType type;
     private Long roomId;
+    @Setter
     private Long senderId;
     @Setter
     private String senderNickname;
@@ -27,6 +29,7 @@ public class Chat {
     @Column(updatable = false)
     private LocalDateTime created_at;
     @Column(name = "is_bad_words")
+    @Getter
     private boolean isBadWords = false;
 
     public Chat(Long roomId, Long senderId, String message, MessageType type) {
@@ -36,8 +39,16 @@ public class Chat {
         this.created_at = LocalDateTime.now();
         this.type = type;
     }
+
+    public Chat(Long roomId, String message, MessageType type) {
+        this.roomId = roomId;
+        this.message = message;
+        this.created_at = LocalDateTime.now();
+        this.type = type;
+    }
+
     public ChatResponseDto toResponseDto(){
-        return new ChatResponseDto(type, roomId, message, senderId, senderNickname, created_at);
+        return new ChatResponseDto(type, roomId, message, senderId, senderNickname, isBadWords ,created_at);
     }
     public static List<ChatResponseDto> toDtoList(List<Chat> chatList){
         List<ChatResponseDto> chatDtos = new ArrayList<>();

@@ -21,6 +21,7 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
     @Setter
+    @Getter
     private String name;
 
     @Getter

@@ -42,7 +42,7 @@ public class ChatRoomController {
 
     // 특정 채팅방 정보 보기
     @GetMapping("/{roomId}")
-    public ResponseEntity<?> roomInfo(@PathVariable Long roomId) {
+    public ResponseEntity<?> roomInfo(@PathVariable(value = "roomId") Long roomId) {
         try{
             return ResponseEntity.ok(chatRoomService.findRoomById(roomId));
         } catch (RestApiException e) {

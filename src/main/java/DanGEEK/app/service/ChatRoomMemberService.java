@@ -7,6 +7,7 @@ import DanGEEK.app.domain.Chat.ChatRoomMember;
 import DanGEEK.app.domain.Member.Member;
 import DanGEEK.app.dto.chat.ChatRequestDto;
 import DanGEEK.app.dto.chat.ChatRoomMemberDeleteDto;
+import DanGEEK.app.dto.chat.ChatRoomMembersDto;
 import DanGEEK.app.repository.ChatRoomMemberRepository;
 import DanGEEK.app.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,6 @@ public class ChatRoomMemberService {
         chatRoom.enterRoom();
         // 채팅방 입장 글 생성 및 저장
         chatService.enterChatRoom(roomId, new ChatRequestDto(member.getId()));
-
         return chatRoomMemberRepository.save(new ChatRoomMember(member, chatRoom));
     }
     @Transactional
@@ -49,15 +49,17 @@ public class ChatRoomMemberService {
         return new ChatRoomMemberDeleteDto(roomId, member.getId());
     }
     // 방의 모든 멤버 이름을 출력
-    public List<String> findAllMemberNameByRoomId(Long roomId){
+    public ChatRoomMembersDto findAllMemberNameByRoomId(Long roomId){
         List<Member> members = findAllMemberByRoomId(roomId);
-        return members.stream().map(Member::getNickname).toList();
+        List<String> str_members = members.stream().map(Member::getNickname).toList();
+        return new ChatRoomMembersDto(roomId, str_members);
     }
     public ChatRoom findRoomById(Long roomId){
         return chatRoomRepository.findById(roomId).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
     }
     public List<Member> findAllMemberByRoomId(Long roomId){
         ChatRoom chatRoom = findRoomById(roomId);
-        return chatRoomMemberRepository.findAllMemberByRoomId(chatRoom);
+        List<Member> members = chatRoomMemberRepository.findAllMemberByRoomId(chatRoom).stream().map(ChatRoomMember::getUserId).toList();
+        return members;
     }
 }

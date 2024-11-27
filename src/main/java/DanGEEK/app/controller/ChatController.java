@@ -1,17 +1,18 @@
 package DanGEEK.app.controller;
 
+import DanGEEK.app.Exception.ErrorResponse;
 import DanGEEK.app.dto.chat.ChatRequestDto;
-import DanGEEK.app.dto.chat.ChatResponseDto;
-import DanGEEK.app.service.ChatRoomMemberService;
 import DanGEEK.app.service.ChatService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.json.ParseException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 @Slf4j
@@ -33,17 +34,44 @@ public class ChatController {
         // 현재 유저의 퇴장 메시지 채팅 전송, DB에 저장
         chatService.exitChatRoom(chatRoomId,chatRequestDto);
     }*/
-    @MessageMapping("/chatroom/{chatRoomId}")  // (2)
-    public void chat(@DestinationVariable(value = "chatRoomId") Long chattingRoomId, ChatRequestDto chattingRequest) throws JsonProcessingException {
-        // 현재 채팅방에 메시지 전송, DB에 저장
-        chatService.talk(chattingRoomId, chattingRequest);
-    }
-    @GetMapping("/chatroom/{chatRoomId}")
-    public ResponseEntity<?> getChatting(@DestinationVariable(value = "chatRoomId") Long chatRoomId){
+    /*@MessageMapping("/chatroom/{chatRoomId}")  // (2)
+    public void chat(@DestinationVariable(value = "chatRoomId") Long chattingRoomId, ChatRequestDto chattingRequest) {
+        try {
+            // 현재 채팅방에 메시지 전송, DB에 저장
+            chatService.talk(chattingRoomId, chattingRequest);
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            return ErrorResponse.toResponseEntity(e);
+        }catch (JsonProcessingException e){
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }*/
+    @GetMapping("/chatroom/chatting/{chatRoomId}")
+    public ResponseEntity<?> getChatting(@PathVariable(value = "chatRoomId") Long chatRoomId){
         try{
             return ResponseEntity.ok(chatService.findByRoomId(chatRoomId));
         }catch (RuntimeException e){
+            return ErrorResponse.toResponseEntity(e);
+        }
+    }
+    @PostMapping("/chatroom/talk/{roomId}")
+    public ResponseEntity<?> talk(@PathVariable(value = "roomId") Long roomId, @RequestBody ChatRequestDto chatDto){
+        try{
+            ;
+            return ResponseEntity.ok(chatService.talk(roomId, chatDto));
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            return ErrorResponse.toResponseEntity(e);
+        }catch (JsonProcessingException e){
+            log.error(e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
 }

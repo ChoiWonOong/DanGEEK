@@ -13,6 +13,6 @@ public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMember, 
     void deleteAllByRoomIdAndUserId(ChatRoom chatroom, Member member);
     List<ChatRoomMember> findAllByRoomId(ChatRoom chatroom);
     @Query("select m from ChatRoomMember m where m.roomId = :chatRoom")
-    List<Member> findAllMemberByRoomId(@Param("chatRoom") ChatRoom chatRoom);
+    List<ChatRoomMember> findAllMemberByRoomId(@Param("chatRoom") ChatRoom chatRoom);
     List<ChatRoomMember> findAllByUserId(Member member);
 }

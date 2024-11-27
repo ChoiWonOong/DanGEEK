@@ -32,14 +32,10 @@ public class ChatRoomService {
     public List<ChatRoomResponseDto> findChatroomByUserId(Long id){
         Member member = memberRepository.findById(id).orElseThrow(()->new RestApiException(ErrorCode.NOT_EXIST_ERROR));
         List<ChatRoomMember> myChatRoomMembers = chatRoomMemberRepository.findAllByUserId(member);
-        if(myChatRoomMembers.isEmpty()){
-            throw new RestApiException(ErrorCode.NOT_EXIST_ERROR);
-        }
-        List<Long> myChatRoomIds = new ArrayList<>();
+        List<ChatRoom> myChatRooms = new ArrayList<>();
         for(ChatRoomMember m : myChatRoomMembers){
-            myChatRoomIds.add(m.getRoomId());
+            myChatRooms.add(m.getRoomId());
         }
-        List<ChatRoom> myChatRooms = chatRoomRepository.findAllById(myChatRoomIds);
         return myChatRooms.stream().map(ChatRoom::toResponseDto).toList();
     }
     public ChatRoom createChatRoom(String name, int maxUser){

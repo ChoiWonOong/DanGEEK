@@ -11,6 +11,8 @@ import DanGEEK.app.repository.ChatRoomMemberRepository;
 import DanGEEK.app.repository.ChatRoomRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.json.ParseException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -18,24 +20,29 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChatService {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatRepository chatRepository;
     private final FlaskService flaskService;
     private final MemberService memberService;
-    public void talk(Long roomId,ChatRequestDto chatDto) throws JsonProcessingException {
-        long memberId = chatDto.getSenderId();
-        Member member = memberService.findMemberById(memberId);
+    public ChatResponseDto talk(Long roomId,ChatRequestDto chatDto) throws JsonProcessingException, ParseException {
+        Member member = memberService.getMe();
         String nickname = member.getNickname();
         chatDto.setRoomId(roomId);
-        flaskService.checkBadWords(new FlaskDto(chatDto.getMessage()));
+        log.info("chatDto : {}",chatDto);
+        boolean isBadWords = flaskService.checkBadWords(new FlaskDto(chatDto.getMessage()));
         Chat chat = chatDto.toEntity(MessageType.TALK);
+        if(isBadWords){
+            chat.setBadWords();
+        }
+        chat.setSenderId(member.getId());
         chat.setSenderNickname(nickname);
         simpMessagingTemplate.convertAndSend("/sub/chatroom/" + roomId, chat.toResponseDto());
-        chatRepository.save(chat);
+        return chatRepository.save(chat).toResponseDto();
     }
     public void enterChatRoom(Long roomId, ChatRequestDto chatDto){
-        Member member = memberService.findMemberById(chatDto.getSenderId());//ChatRoomMember chatRoomMember = ;
+        Member member = memberService.getMe();//ChatRoomMember chatRoomMember = ;
         String nickname = member.getNickname();
         chatDto.setRoomId(roomId);
         chatDto.setMessage(nickname+MessageType.ENTER.message);
@@ -45,7 +52,7 @@ public class ChatService {
         chatRepository.save(chat);
     }
     public void exitChatRoom(Long roomId, ChatRequestDto chatDto){
-        Member member = memberService.findMemberById(chatDto.getSenderId());
+        Member member = memberService.getMe();
         String nickname = member.getNickname();chatDto.setRoomId(roomId);
         chatDto.setMessage(nickname+MessageType.EXIT.message);
         Chat chat = chatDto.toEntity(MessageType.EXIT);

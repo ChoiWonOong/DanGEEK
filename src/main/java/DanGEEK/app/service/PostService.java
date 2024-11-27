@@ -1,7 +1,6 @@
 package DanGEEK.app.service;
 
 import DanGEEK.app.Exception.ErrorCode;
-import DanGEEK.app.Exception.ErrorResponse;
 import DanGEEK.app.Exception.RestApiException;
 import DanGEEK.app.domain.Chat.ChatRoom;
 import DanGEEK.app.domain.Chat.ChatRoomMember;
@@ -10,7 +9,6 @@ import DanGEEK.app.domain.Member.MemberIntroduction;
 import DanGEEK.app.domain.Post;
 import DanGEEK.app.domain.PostType;
 import DanGEEK.app.dto.post.*;
-import DanGEEK.app.repository.MemberRepository;
 import DanGEEK.app.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +38,7 @@ public class PostService {
         return post;
     }
     public Post createGroupBuyPost(PostCreateRequestDto postDto, String url) {
-        ChatRoom chatRoom = chatRoomService.createChatRoom(postDto.getTitle(), postDto.getMaxUser());
+        ChatRoom chatRoom = chatRoomService.createChatRoom(postDto.getTitle(), 4);
         log.info("chatRoom : {} {}", chatRoom.getRoomId(), chatRoom.getMaxUser());
         Post post = new Post(postDto, memberService.getMe(), chatRoom);
         post.setImageUrl(url);

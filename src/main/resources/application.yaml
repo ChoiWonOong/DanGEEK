@@ -1,5 +1,13 @@
 server:
-  port: 8080
+  port: 443
+  ssl:
+    enabled: true
+    key-store: ${KEY_STORE}/keystore.p12
+    key-store-password: ${KEY_STORE_PASSWORD}
+    key-store-type: PKCS12
+    security.require-ssl: true
+#server:
+#port: 8080
 
 spring:
   datasource:
